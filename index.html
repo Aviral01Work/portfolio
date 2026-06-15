@@ -285,6 +285,7 @@
     .auto-card {
       background:var(--bg2); border:1px solid var(--border);
       border-radius:var(--radius); padding:26px 28px;
+      cursor:pointer;
       display:flex; flex-direction:column; gap:14px;
       transition:border-color .25s, background .25s;
       will-change:transform;
@@ -331,6 +332,71 @@
       font-style:italic;
     }
     .auto-screenshot img { width:100%; height:auto; display:block; }
+
+    /* ─── AUTO-CARD MODAL ────────────────────── */
+    #auto-modal-backdrop {
+      position:fixed; inset:0; z-index:10000;
+      background:rgba(7,9,15,0.82); backdrop-filter:blur(8px);
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none;
+      transition:opacity .25s ease;
+    }
+    #auto-modal-backdrop.open { opacity:1; pointer-events:all; }
+    #auto-modal {
+      background:var(--bg2); border:1px solid var(--border2);
+      border-radius:18px; width:min(700px,92vw); max-height:88vh;
+      overflow-y:auto; padding:40px 44px;
+      transform:translateY(32px) scale(0.97);
+      transition:transform .28s cubic-bezier(.22,1,.36,1);
+      position:relative; scrollbar-width:thin; scrollbar-color:var(--border) transparent;
+    }
+    #auto-modal-backdrop.open #auto-modal {
+      transform:translateY(0) scale(1);
+    }
+    #modal-close {
+      position:absolute; top:18px; right:20px;
+      background:var(--bg3); border:1px solid var(--border);
+      color:var(--text2); width:34px; height:34px;
+      border-radius:50%; font-size:1.1rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .2s, color .2s;
+    }
+    #modal-close:hover { background:var(--blue-dim); color:var(--text); }
+    #modal-platform { display:inline-block; margin-bottom:14px; }
+    #modal-title {
+      font-family:var(--font2); font-size:1.55rem; font-weight:700;
+      color:var(--text); margin-bottom:14px; line-height:1.25;
+    }
+    #modal-desc {
+      color:var(--text2); font-size:.95rem; line-height:1.7;
+      margin-bottom:28px;
+    }
+    .modal-section-label {
+      font-size:.72rem; font-weight:600; letter-spacing:.08em;
+      text-transform:uppercase; color:var(--text3); margin-bottom:12px;
+    }
+    #modal-flow {
+      display:flex; flex-wrap:wrap; align-items:center; gap:6px;
+      margin-bottom:28px;
+    }
+    #modal-flow .af-step {
+      background:var(--bg3); border:1px solid var(--border2);
+      border-radius:8px; padding:10px 14px; font-size:.8rem;
+      text-align:center; min-width:70px; line-height:1.3;
+    }
+    #modal-flow .af-step span { display:block; color:var(--blue); font-size:.72rem; }
+    #modal-flow .af-arrow { color:var(--text3); font-size:1rem; }
+    #modal-details {
+      color:var(--text2); font-size:.9rem; line-height:1.7;
+      margin-bottom:24px; white-space:pre-line;
+    }
+    #modal-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:28px; }
+    #modal-screenshot {
+      border-radius:10px; overflow:hidden; border:1px solid var(--border);
+      min-height:120px; display:flex; align-items:center; justify-content:center;
+      color:var(--text3); font-size:.8rem; font-style:italic; background:var(--bg);
+    }
+    #modal-screenshot img { width:100%; height:auto; display:block; }
 
     /* ─── EXPERIENCE ─────────────────────────── */
     .exp-wrap { display:flex; flex-direction:column; gap:12px; }
@@ -625,7 +691,7 @@
     <div class="auto-grid">
 
       <!-- Card 1 -->
-      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+      <div class="auto-card" data-id="0" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
         <div class="auto-header">
           <span class="auto-icon">🎙️</span>
           <div>
@@ -647,7 +713,7 @@
       </div>
 
       <!-- Card 2 -->
-      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+      <div class="auto-card" data-id="1" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
         <div class="auto-header">
           <span class="auto-icon">💬</span>
           <div>
@@ -669,7 +735,7 @@
       </div>
 
       <!-- Card 3 -->
-      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+      <div class="auto-card" data-id="2" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
         <div class="auto-header">
           <span class="auto-icon">🏢</span>
           <div>
@@ -691,7 +757,7 @@
       </div>
 
       <!-- Card 4 -->
-      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+      <div class="auto-card" data-id="3" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
         <div class="auto-header">
           <span class="auto-icon">📄</span>
           <div>
@@ -713,7 +779,7 @@
       </div>
 
       <!-- Card 5 -->
-      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+      <div class="auto-card" data-id="4" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
         <div class="auto-header">
           <span class="auto-icon">📝</span>
           <div>
@@ -735,7 +801,7 @@
       </div>
 
       <!-- Card 6 -->
-      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+      <div class="auto-card" data-id="5" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
         <div class="auto-header">
           <span class="auto-icon">📊</span>
           <div>
@@ -862,6 +928,24 @@
     </div>
   </div>
 </section>
+
+<!-- ── AUTOMATION MODAL ── -->
+<div id="auto-modal-backdrop" role="dialog" aria-modal="true">
+  <div id="auto-modal">
+    <button id="modal-close" aria-label="Close">✕</button>
+    <div id="modal-platform"></div>
+    <div id="modal-title"></div>
+    <p id="modal-desc"></p>
+    <div class="modal-section-label">Workflow</div>
+    <div id="modal-flow"></div>
+    <div class="modal-section-label">How it works</div>
+    <div id="modal-details"></div>
+    <div class="modal-section-label">Tools & Integrations</div>
+    <div id="modal-tags"></div>
+    <div class="modal-section-label">Screenshot</div>
+    <div id="modal-screenshot">📸 Screenshot coming soon</div>
+  </div>
+</div>
 
 </main>
 
@@ -1089,6 +1173,200 @@ window.addEventListener('scroll',()=>{
   gsap.utils.toArray('.s-label,.s-title').forEach(el=>{
     gsap.from(el,{scrollTrigger:{trigger:el,start:'top 88%'},
       opacity:0,y:20,duration:.6,ease:'power3.out'});
+  });
+  gsap.utils.toArray('.auto-card').forEach((el,i)=>{
+    gsap.from(el,{scrollTrigger:{trigger:el,start:'top 88%'},
+      opacity:0,y:30,duration:.6,delay:i*.07,ease:'power3.out'});
+  });
+})();
+
+// ── AUTOMATION MODAL ──────────────────────────────
+(function(){
+  const PROJECTS = [
+    {
+      id: 0,
+      platform: 'n8n',
+      icon: '🎙️',
+      title: 'Cliniko AI Appointment Booking Agent',
+      desc: 'Full AI agent for a healthcare clinic — patients chat via WhatsApp or web, the agent checks Cliniko calendar in real time, books or reschedules appointments, and sends Gmail confirmations. 106 nodes with voice + text support and persistent memory.',
+      flow: [
+        {label:'Chat', sub:'Trigger'},
+        {label:'Memory', sub:'Manager'},
+        {label:'AI Agent', sub:'GPT-4'},
+        {label:'Cliniko', sub:'API'},
+        {label:'Gmail', sub:'Confirm'},
+        {label:'Google', sub:'Sheets Log'},
+      ],
+      details: `• Trigger: WhatsApp / web chat message arrives via webhook
+• Memory Manager: Loads conversation history so agent remembers previous messages
+• AI Agent (GPT-4): Decides which tool to call — check slots, book, reschedule, or cancel
+• Cliniko API: Fetches available slots, creates/updates appointments via REST
+• Gmail: Sends formatted confirmation or reschedule email to patient
+• Google Sheets: Logs every appointment event for clinic staff reporting
+• Voice support via ElevenLabs TTS — patients can interact by voice
+• 106 nodes total; handles edge cases like fully-booked days and timezone conversion`,
+      tags: ['n8n','GPT-4','Cliniko','Gmail','Memory Manager','Tool Calls','Google Sheets','ElevenLabs','WhatsApp Webhook'],
+    },
+    {
+      id: 1,
+      platform: 'Make.com',
+      icon: '💬',
+      title: 'WhatsApp AI Chatbot — Magicrete',
+      desc: 'AI-powered WhatsApp customer support bot for a building materials company. Customers send queries via WhatsApp, GPT-4 retrieves answers from a Make DataStore knowledge base and replies via 360Dialog — fully automated, 24/7 support.',
+      flow: [
+        {label:'WhatsApp', sub:'Webhook'},
+        {label:'GPT-4', sub:'Assistant'},
+        {label:'DataStore', sub:'Lookup'},
+        {label:'360Dialog', sub:'Reply'},
+      ],
+      details: `• Webhook: 360Dialog pushes incoming WhatsApp messages to Make scenario
+• GPT-4 Assistant: Reads message, decides if it needs a DataStore lookup or can answer directly
+• DataStore Lookup: Searches Magicrete product catalog, FAQs, and pricing data
+• 360Dialog Reply: Sends formatted WhatsApp response back to customer within seconds
+• Handles product queries, price enquiries, distributor locations, and escalation to human
+• Knowledge base updated weekly by syncing a Google Sheet to the DataStore
+• Zero human intervention for 80%+ of incoming queries`,
+      tags: ['Make.com','GPT-4','WhatsApp','360Dialog','DataStore','Google Sheets'],
+    },
+    {
+      id: 2,
+      platform: 'Make.com',
+      icon: '🏢',
+      title: 'Facebook Lead → GHL + Teams + Outlook',
+      desc: 'Captures Facebook Lead Ads in real time, creates a contact in GoHighLevel, logs to Airtable, notifies the sales team on Microsoft Teams, and sends a personalised Outlook email — all within seconds of a lead submitting the form.',
+      flow: [
+        {label:'FB Lead', sub:'Ad Form'},
+        {label:'GHL', sub:'Contact'},
+        {label:'Airtable', sub:'Log'},
+        {label:'MS Teams', sub:'Notify'},
+        {label:'Outlook', sub:'Email'},
+      ],
+      details: `• Facebook Lead Ads webhook fires instantly on form submission
+• GoHighLevel: Creates / updates contact with all lead fields, assigns to pipeline stage
+• Airtable: Appends a row to the leads tracker sheet for reporting
+• Microsoft Teams: Posts a card to the sales channel with lead name, phone, and ad source
+• Outlook: Sends personalised email to the lead with intro + next steps
+• Duplicate check: If email already exists in GHL, updates instead of creating new
+• Average end-to-end latency: < 8 seconds from form submit to email sent`,
+      tags: ['Make.com','Facebook Lead Ads','GoHighLevel','Airtable','MS Teams','Outlook'],
+    },
+    {
+      id: 3,
+      platform: 'Make.com',
+      icon: '📄',
+      title: 'Insurance Proposal OCR → Google Docs',
+      desc: 'Watches a Google Drive folder for new insurance documents, extracts structured data using Gemini Vision + GPT-4 OCR, and auto-generates a formatted Google Docs proposal from a template — removing hours of manual data entry.',
+      flow: [
+        {label:'Google', sub:'Drive Watch'},
+        {label:'Gemini', sub:'Vision OCR'},
+        {label:'GPT-4', sub:'Structure'},
+        {label:'Template', sub:'Fill'},
+        {label:'Google', sub:'Docs Output'},
+      ],
+      details: `• Google Drive trigger: fires when a new PDF/image is dropped into the watched folder
+• Gemini Vision: Extracts raw text + tables from scanned documents (handles poor scan quality)
+• GPT-4: Structures raw text into JSON fields — insured name, policy type, coverage amount, dates
+• Template Fill: Populates a Google Docs template with extracted variables via Docs API
+• Output: Fully formatted proposal document saved back to Drive, ready to send to client
+• Error handling: If extraction confidence is low, flags document for manual review
+• Typical processing time: 25–40 seconds per document`,
+      tags: ['Make.com','Gemini AI','GPT-4','Google Drive','Google Docs','OCR'],
+    },
+    {
+      id: 4,
+      platform: 'Make.com',
+      icon: '📝',
+      title: 'AI WordPress Blog Auto Publisher',
+      desc: 'Reads blog topics from Google Sheets, generates full SEO-optimised posts with GPT-4, creates AI-generated featured images via ImageKit, and publishes directly to WordPress — a fully automated content pipeline that runs on schedule.',
+      flow: [
+        {label:'Google', sub:'Sheets'},
+        {label:'GPT-4', sub:'Write Post'},
+        {label:'DALL·E', sub:'Image Gen'},
+        {label:'ImageKit', sub:'Upload'},
+        {label:'WordPress', sub:'Publish'},
+      ],
+      details: `• Google Sheets: Reads next unpublished topic row (title, keywords, category, tone)
+• GPT-4: Writes a 1,200–1,800 word SEO blog post with H2/H3 structure, meta description, and slug
+• DALL·E / ImageKit: Generates a relevant featured image and uploads it to ImageKit CDN
+• WordPress REST API: Creates draft post with content, featured image, tags, and category
+• Scheduled trigger: Runs daily at 9 AM, publishes 1 post per run
+• Sheets update: Marks the row as "Published" with timestamp after successful post
+• Handles up to 30 posts per month autonomously`,
+      tags: ['Make.com','GPT-4','DALL·E','WordPress','ImageKit','Google Sheets'],
+    },
+    {
+      id: 5,
+      platform: 'n8n',
+      icon: '📊',
+      title: 'AI Loan Document OCR Processor',
+      desc: 'Accepts loan documents via a web form, extracts structured data with GPT-4 Vision, validates and routes based on loan type, syncs results to Google Sheets, and sends a structured summary report via Gmail.',
+      flow: [
+        {label:'Form', sub:'Trigger'},
+        {label:'GPT-4', sub:'Vision OCR'},
+        {label:'Validate', sub:'& Route'},
+        {label:'Sheets', sub:'Sync'},
+        {label:'Gmail', sub:'Report'},
+      ],
+      details: `• n8n Form Trigger: Customer or staff uploads loan document via embedded web form
+• GPT-4 Vision: Reads PDF / image, extracts borrower name, loan amount, income, collateral, dates
+• Validation node: Checks for missing required fields; flags incomplete docs for review
+• Router: Branches workflow based on loan type (home / personal / vehicle / business)
+• Google Drive: Stores original document in categorised folder
+• Google Sheets: Appends extracted data row with timestamp and status
+• Gmail: Sends structured HTML summary to loan officer with key figures highlighted
+• 39 nodes; handles multiple document formats and multi-page PDFs`,
+      tags: ['n8n','GPT-4','Google Drive','Gmail','Google Sheets','Form Trigger','OCR'],
+    },
+  ];
+
+  const backdrop = document.getElementById('auto-modal-backdrop');
+  const modalPlatform = document.getElementById('modal-platform');
+  const modalTitle    = document.getElementById('modal-title');
+  const modalDesc     = document.getElementById('modal-desc');
+  const modalFlow     = document.getElementById('modal-flow');
+  const modalDetails  = document.getElementById('modal-details');
+  const modalTags     = document.getElementById('modal-tags');
+  const modalShot     = document.getElementById('modal-screenshot');
+  const closeBtn      = document.getElementById('modal-close');
+
+  function openModal(id){
+    const p = PROJECTS[id];
+    // Platform badge
+    modalPlatform.innerHTML = `<div class="auto-platform ${p.platform==='n8n'?'n8n':'make'}">${p.platform}</div>`;
+    modalTitle.textContent = p.icon + ' ' + p.title;
+    modalDesc.textContent  = p.desc;
+    // Flow
+    modalFlow.innerHTML = p.flow.map((s,i)=>
+      (i>0?'<div class="af-arrow">→</div>':'') +
+      `<div class="af-step">${s.label}<span>${s.sub}</span></div>`
+    ).join('');
+    modalDetails.textContent = p.details;
+    // Tags
+    modalTags.innerHTML = p.tags.map(t=>`<span class="ptag">${t}</span>`).join('');
+    // Screenshot placeholder (swap with <img> later)
+    modalShot.innerHTML = '📸 Screenshot coming soon';
+    // Open
+    backdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(){
+    backdrop.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.auto-card').forEach(card=>{
+    card.addEventListener('click', ()=> openModal(+card.dataset.id));
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', e=>{ if(e.target===backdrop) closeModal(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
+  // Add auto-cards to cursor hover list
+  document.querySelectorAll('.auto-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('hovered'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('hovered'));
   });
 })();
 </script>
