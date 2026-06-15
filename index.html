@@ -11,6 +11,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -445,6 +446,125 @@
     }
     #modal-screenshot img { width:100%; height:auto; display:block; }
 
+    /* ─── NOISE GRAIN OVERLAY ───────────────── */
+    body::after {
+      content:''; position:fixed; inset:0; z-index:9998; pointer-events:none;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size:160px 160px; opacity:0.025;
+    }
+
+    /* ─── LIVE TICKER ───────────────────────── */
+    #live-ticker {
+      background:var(--bg2); border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+      padding:10px 0; overflow:hidden; position:relative;
+    }
+    #live-ticker::before, #live-ticker::after {
+      content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2;
+      pointer-events:none;
+    }
+    #live-ticker::before { left:0; background:linear-gradient(to right,var(--bg2),transparent); }
+    #live-ticker::after  { right:0; background:linear-gradient(to left,var(--bg2),transparent); }
+    .ticker-label {
+      position:absolute; left:20px; top:50%; transform:translateY(-50%);
+      z-index:3; font-size:.6rem; font-weight:700; letter-spacing:.1em;
+      text-transform:uppercase; color:var(--blue);
+      background:var(--bg2); padding-right:10px;
+    }
+    .ticker-live-dot {
+      display:inline-block; width:6px; height:6px; border-radius:50%;
+      background:#22c55e; margin-right:6px; vertical-align:middle;
+      animation:blink 1.4s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .ticker-track {
+      display:flex; gap:0; animation:ticker-scroll 40s linear infinite;
+      width:max-content;
+    }
+    .ticker-track:hover { animation-play-state:paused; }
+    @keyframes ticker-scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .ticker-item {
+      display:flex; align-items:center; gap:8px; padding:0 32px;
+      font-size:.75rem; color:var(--text2); white-space:nowrap;
+    }
+    .ticker-item .ti-icon { font-size:.9rem; }
+    .ticker-item .ti-status {
+      font-size:.6rem; font-weight:700; padding:2px 7px; border-radius:10px;
+      background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.25);
+      color:#22c55e; margin-left:4px;
+    }
+    .ticker-sep { color:var(--border2); padding:0 4px; }
+
+    /* ─── TYPEWRITER CURSOR ─────────────────── */
+    .tw-cursor {
+      display:inline-block; width:2px; height:1em;
+      background:var(--blue); margin-left:2px; vertical-align:text-bottom;
+      animation:blink-cursor .7s step-end infinite;
+    }
+    @keyframes blink-cursor { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ─── TECH STACK SECTION ────────────────── */
+    #stack { padding:60px 0; }
+    .stack-grid {
+      display:flex; flex-wrap:wrap; gap:10px; margin-top:32px;
+    }
+    .stack-chip {
+      display:flex; align-items:center; gap:8px;
+      background:var(--bg2); border:1px solid var(--border);
+      border-radius:10px; padding:9px 16px;
+      font-size:.78rem; font-weight:500; color:var(--text2);
+      transition:border-color .2s, color .2s, background .2s;
+      cursor:default;
+    }
+    .stack-chip:hover {
+      border-color:rgba(74,140,247,0.35); color:var(--text);
+      background:var(--bg3);
+    }
+    .stack-chip .sc-icon { font-size:1rem; }
+
+    /* ─── VERTICAL TIMELINE (experience) ───── */
+    .timeline { position:relative; padding-left:28px; display:flex; flex-direction:column; gap:0; }
+    .timeline::before {
+      content:''; position:absolute; left:6px; top:8px; bottom:8px; width:1px;
+      background:linear-gradient(to bottom, var(--blue), var(--border), transparent);
+    }
+    .tl-item { position:relative; padding:0 0 36px 28px; }
+    .tl-item:last-child { padding-bottom:0; }
+    .tl-dot {
+      position:absolute; left:-22px; top:6px;
+      width:13px; height:13px; border-radius:50%;
+      background:var(--bg); border:2px solid var(--blue);
+      transition:background .25s;
+    }
+    .tl-item:hover .tl-dot { background:var(--blue); }
+    .tl-date {
+      font-size:.68rem; font-weight:600; color:var(--blue);
+      letter-spacing:.05em; margin-bottom:6px;
+    }
+    .tl-role {
+      font-family:var(--font2); font-size:1rem; font-weight:700;
+      color:var(--text); margin-bottom:4px;
+    }
+    .tl-co {
+      font-size:.78rem; color:var(--text3); margin-bottom:12px;
+    }
+    .tl-ul { list-style:none; display:flex; flex-direction:column; gap:6px; }
+    .tl-ul li {
+      font-size:.8rem; color:var(--text2); line-height:1.65;
+      padding-left:14px; position:relative;
+    }
+    .tl-ul li::before {
+      content:''; position:absolute; left:0; top:8px;
+      width:5px; height:1px; background:var(--blue-b);
+    }
+
+    /* ─── SCROLL COUNTER ────────────────────── */
+    .stat-n { transition:color .3s; }
+    .stat-n.counting { color:var(--blue); }
+
+    /* ─── MAGNETIC BTN ──────────────────────── */
+    .btn { display:inline-block; position:relative; }
+
     /* ─── EXPERIENCE ─────────────────────────── */
     .exp-wrap { display:flex; flex-direction:column; gap:12px; }
     .ex-item {
@@ -550,7 +670,7 @@
   <div class="nav-logo">aviral<span>.</span>dev</div>
   <ul class="nav-links">
     <li><a href="#skills">Skills</a></li>
-    <li><a href="#projects">Projects</a></li>
+    <li><a href="#stack">Stack</a></li>
     <li><a href="#automations">Automations</a></li>
     <li><a href="#experience">Experience</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -564,7 +684,7 @@
 <section id="hero">
   <div class="hero-inner">
     <div class="hero-content">
-      <div class="avail-badge"><span class="avail-dot"></span>Open to opportunities</div>
+      <div class="avail-badge"><span class="avail-dot"></span><span id="avail-text">Open to opportunities</span></div>
       <h1 class="name">Aviral<br/><span class="blue">Dubey.</span></h1>
 
       <!-- Contact row — right below name -->
@@ -586,7 +706,7 @@
       </div>
 
       <p class="hero-sub">
-        AI Automation Engineer &amp; <strong>Make.com Certified</strong> —
+        <span id="typewriter-role">AI Automation Engineer</span><span class="tw-cursor"></span> &amp; <strong>Make.com Certified</strong> —
         building intelligent workflows that eliminate repetitive work and scale businesses
         without adding headcount.
       </p>
@@ -620,6 +740,12 @@
     </div>
   </div>
 </section>
+
+<!-- ── LIVE TICKER ── -->
+<div id="live-ticker">
+  <span class="ticker-label"><span class="ticker-live-dot"></span>Live</span>
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
 
 <div class="divider"></div>
 
@@ -673,6 +799,42 @@
           <span class="tag">Scikit-Learn</span><span class="tag">Pandas</span>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── TECH STACK ── -->
+<section id="stack">
+  <div class="wrap">
+    <span class="s-label">Integrations</span>
+    <h2 class="s-title">Tech <em>Stack</em></h2>
+    <div class="stack-grid">
+      <div class="stack-chip"><span class="sc-icon">🔮</span>Make.com</div>
+      <div class="stack-chip"><span class="sc-icon">🔀</span>n8n</div>
+      <div class="stack-chip"><span class="sc-icon">⚡</span>Zapier</div>
+      <div class="stack-chip"><span class="sc-icon">🤖</span>GPT-4 / ChatGPT</div>
+      <div class="stack-chip"><span class="sc-icon">🧠</span>Claude AI</div>
+      <div class="stack-chip"><span class="sc-icon">👁️</span>Gemini Vision</div>
+      <div class="stack-chip"><span class="sc-icon">🎙️</span>Vapi</div>
+      <div class="stack-chip"><span class="sc-icon">🔊</span>ElevenLabs</div>
+      <div class="stack-chip"><span class="sc-icon">📞</span>Twilio</div>
+      <div class="stack-chip"><span class="sc-icon">💬</span>WhatsApp / 360Dialog</div>
+      <div class="stack-chip"><span class="sc-icon">🏢</span>GoHighLevel</div>
+      <div class="stack-chip"><span class="sc-icon">📊</span>HubSpot</div>
+      <div class="stack-chip"><span class="sc-icon">🗃️</span>Airtable</div>
+      <div class="stack-chip"><span class="sc-icon">💰</span>Salesforce</div>
+      <div class="stack-chip"><span class="sc-icon">📧</span>Gmail / Outlook</div>
+      <div class="stack-chip"><span class="sc-icon">📁</span>Google Drive</div>
+      <div class="stack-chip"><span class="sc-icon">📋</span>Google Sheets</div>
+      <div class="stack-chip"><span class="sc-icon">📝</span>Google Docs</div>
+      <div class="stack-chip"><span class="sc-icon">🌐</span>WordPress</div>
+      <div class="stack-chip"><span class="sc-icon">🛒</span>Shopify</div>
+      <div class="stack-chip"><span class="sc-icon">💳</span>Stripe</div>
+      <div class="stack-chip"><span class="sc-icon">📘</span>Facebook Ads</div>
+      <div class="stack-chip"><span class="sc-icon">🐍</span>Python</div>
+      <div class="stack-chip"><span class="sc-icon">🔗</span>REST APIs / Webhooks</div>
     </div>
   </div>
 </section>
@@ -880,43 +1042,44 @@
   <div class="wrap">
     <span class="s-label">Career</span>
     <h2 class="s-title">Work <em>Experience</em></h2>
-    <div class="exp-wrap">
-      <div class="ex-item">
-        <div class="ex-top">
-          <div class="ex-role">AI Automation Engineer</div>
-          <div class="ex-date">Jan 2026 – Present</div>
-        </div>
-        <div class="ex-co">GrowwStacks Automation · Make.com Platinum Partner (Top 5 Globally) · Indore</div>
-        <ul class="ex-ul">
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-date">Jan 2026 – Present</div>
+        <div class="tl-role">AI Automation Engineer</div>
+        <div class="tl-co">GrowwStacks Automation · Make.com Platinum Partner (Top 5 Globally) · Indore</div>
+        <ul class="tl-ul">
           <li>Designing end-to-end AI workflows using Make.com and n8n for clients across 6 countries, saving 40+ hrs/week on average.</li>
           <li>Building AI agents powered by GPT-4 and Claude for lead qualification, support, and document processing with RAG systems.</li>
           <li>Developing Voice AI solutions using Vapi and ElevenLabs integrated with Twilio for automated calling.</li>
           <li>Integrating GoHighLevel, HubSpot, Airtable, Zapier and 30+ SaaS tools via REST APIs and webhooks.</li>
         </ul>
       </div>
-      <div class="ex-item">
-        <div class="ex-top">
-          <div class="ex-role">Junior Automation Engineer</div>
-          <div class="ex-date">Aug 2025 – Jan 2026</div>
-        </div>
-        <div class="ex-co">GrowwStacks Automation · Indore</div>
-        <ul class="ex-ul">
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-date">Aug 2025 – Jan 2026</div>
+        <div class="tl-role">Junior Automation Engineer</div>
+        <div class="tl-co">GrowwStacks Automation · Indore</div>
+        <ul class="tl-ul">
           <li>Built automation workflows using Make.com, n8n, and custom APIs for client onboarding and operations.</li>
           <li>Developed AI chatbots and WhatsApp agents (Wahapi) integrated with CRM platforms.</li>
           <li>Handled deployment, error handling, and documentation of automation systems.</li>
         </ul>
       </div>
-      <div class="ex-item">
-        <div class="ex-top">
-          <div class="ex-role">AI/ML Intern</div>
-          <div class="ex-date">Jun 2023 – Jul 2023</div>
-        </div>
-        <div class="ex-co">IIT Kanpur · Research Internship</div>
-        <ul class="ex-ul">
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-date">Jun 2023 – Jul 2023</div>
+        <div class="tl-role">AI/ML Intern</div>
+        <div class="tl-co">IIT Kanpur · Research Internship</div>
+        <ul class="tl-ul">
           <li>Worked on ML model training, evaluation, and performance optimization.</li>
           <li>Studied Deep Learning fundamentals through hands-on project tasks.</li>
         </ul>
       </div>
+
     </div>
   </div>
 </section>
@@ -1230,6 +1393,125 @@ window.addEventListener('scroll',()=>{
   gsap.utils.toArray('.auto-card').forEach((el,i)=>{
     gsap.from(el,{scrollTrigger:{trigger:el,start:'top 88%'},
       opacity:0,y:30,duration:.6,delay:i*.07,ease:'power3.out'});
+  });
+  gsap.utils.toArray('.stack-chip').forEach((el,i)=>{
+    gsap.from(el,{scrollTrigger:{trigger:el,start:'top 92%'},
+      opacity:0,y:16,duration:.4,delay:i*.025,ease:'power2.out'});
+  });
+  gsap.utils.toArray('.tl-item').forEach((el,i)=>{
+    gsap.from(el,{scrollTrigger:{trigger:el,start:'top 88%'},
+      opacity:0,x:-24,duration:.6,delay:i*.1,ease:'power3.out'});
+  });
+})();
+
+// ── LENIS SMOOTH SCROLL ───────────────────────────
+(function(){
+  if(typeof Lenis === 'undefined') return;
+  const lenis = new Lenis({ lerp:0.08, smoothWheel:true });
+  function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+  // sync with GSAP ScrollTrigger
+  lenis.on('scroll', ScrollTrigger.update);
+})();
+
+// ── TYPEWRITER ────────────────────────────────────
+(function(){
+  const el = document.getElementById('typewriter-role');
+  if(!el) return;
+  const roles = [
+    'AI Automation Engineer',
+    'Make.com Expert',
+    'n8n Workflow Builder',
+    'Voice AI Developer',
+    'GPT-4 Integration Specialist',
+  ];
+  let ri=0, ci=0, deleting=false;
+  function tick(){
+    const full = roles[ri];
+    if(!deleting){
+      ci++;
+      el.textContent = full.slice(0,ci);
+      if(ci===full.length){ deleting=true; setTimeout(tick,2200); return; }
+      setTimeout(tick, 60 + Math.random()*30);
+    } else {
+      ci--;
+      el.textContent = full.slice(0,ci);
+      if(ci===0){ deleting=false; ri=(ri+1)%roles.length; setTimeout(tick,400); return; }
+      setTimeout(tick, 28);
+    }
+  }
+  setTimeout(tick, 1800);
+})();
+
+// ── LIVE TICKER ───────────────────────────────────
+(function(){
+  const events = [
+    {icon:'🤖', text:'GPT-4 processing loan document', status:'running'},
+    {icon:'📅', text:'Appointment booked via Cliniko agent', status:'done'},
+    {icon:'💬', text:'WhatsApp reply sent · Magicrete customer', status:'done'},
+    {icon:'📧', text:'Facebook lead routed to GoHighLevel', status:'done'},
+    {icon:'📝', text:'SEO blog post published to WordPress', status:'done'},
+    {icon:'🔍', text:'Insurance OCR extracting policy data', status:'running'},
+    {icon:'📊', text:'Google Sheets synced · Loan processor', status:'done'},
+    {icon:'🎙️', text:'Voice agent handling inbound call', status:'running'},
+    {icon:'📤', text:'Outlook email sent to qualified lead', status:'done'},
+    {icon:'🔀', text:'n8n workflow triggered · new form submission', status:'running'},
+  ];
+  const track = document.getElementById('ticker-track');
+  if(!track) return;
+  // duplicate for seamless loop
+  const all = [...events, ...events];
+  track.innerHTML = all.map(e=>`
+    <div class="ticker-item">
+      <span class="ti-icon">${e.icon}</span>
+      <span>${e.text}</span>
+      <span class="ti-status">${e.status==='running'?'● running':'✓ done'}</span>
+    </div>
+    <span class="ticker-sep">·</span>
+  `).join('');
+})();
+
+// ── SCROLL COUNTER ────────────────────────────────
+(function(){
+  const stats = document.querySelectorAll('.stat-item');
+  stats.forEach(item => {
+    const numEl = item.querySelector('.stat-n');
+    if(!numEl) return;
+    const raw = numEl.textContent;
+    const target = parseInt(raw.replace(/\D/g,''));
+    const suffix = raw.replace(/[\d]/g,'');
+    let started = false;
+    const obs = new IntersectionObserver(entries=>{
+      if(entries[0].isIntersecting && !started){
+        started = true;
+        numEl.classList.add('counting');
+        let start = 0;
+        const dur = 1400;
+        const step = 16;
+        const inc = target / (dur/step);
+        const timer = setInterval(()=>{
+          start = Math.min(start+inc, target);
+          numEl.innerHTML = Math.floor(start) + suffix;
+          if(start>=target){ clearInterval(timer); numEl.classList.remove('counting'); }
+        }, step);
+      }
+    },{threshold:0.5});
+    obs.observe(item);
+  });
+})();
+
+// ── MAGNETIC BUTTONS ──────────────────────────────
+(function(){
+  document.querySelectorAll('.btn').forEach(btn=>{
+    btn.addEventListener('mousemove', e=>{
+      const r = btn.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width/2;
+      const y = e.clientY - r.top  - r.height/2;
+      btn.style.transform = `translate(${x*0.22}px,${y*0.22}px)`;
+    });
+    btn.addEventListener('mouseleave', ()=>{
+      btn.style.transform = 'translate(0,0)';
+    });
   });
 })();
 
