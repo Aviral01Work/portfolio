@@ -277,6 +277,61 @@
       font-size:.7rem; font-weight:600;
     }
 
+    /* ─── AUTOMATION WORKFLOWS ──────────────── */
+    .auto-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+      gap:20px;
+    }
+    .auto-card {
+      background:var(--bg2); border:1px solid var(--border);
+      border-radius:var(--radius); padding:26px 28px;
+      display:flex; flex-direction:column; gap:14px;
+      transition:border-color .25s, background .25s;
+      will-change:transform;
+    }
+    .auto-card:hover { border-color:rgba(74,140,247,0.25); background:var(--bg3); }
+    .auto-header { display:flex; align-items:center; justify-content:space-between; }
+    .auto-icon { font-size:1.6rem; }
+    .auto-platform {
+      font-size:.68rem; font-weight:700; padding:3px 10px;
+      border-radius:20px; letter-spacing:.04em;
+    }
+    .auto-platform.make {
+      background:rgba(132,204,22,0.1); border:1px solid rgba(132,204,22,0.25);
+      color:#84cc16;
+    }
+    .auto-platform.n8n {
+      background:rgba(232,90,90,0.1); border:1px solid rgba(232,90,90,0.25);
+      color:#f87171;
+    }
+    .auto-title { font-size:.95rem; font-weight:700; font-family:var(--font2); color:var(--text); line-height:1.4; }
+    .auto-desc { font-size:.8rem; color:var(--text2); line-height:1.75; }
+    .auto-flow {
+      display:flex; align-items:center; gap:4px; flex-wrap:nowrap;
+      overflow-x:auto; padding:12px 14px;
+      background:var(--bg); border:1px solid var(--border);
+      border-radius:10px; scrollbar-width:none;
+    }
+    .auto-flow::-webkit-scrollbar { display:none; }
+    .af-step {
+      background:var(--blue-dim); border:1px solid var(--blue-b);
+      border-radius:8px; padding:6px 10px; text-align:center;
+      font-size:.65rem; font-weight:600; color:var(--blue);
+      white-space:nowrap; flex-shrink:0; line-height:1.4;
+    }
+    .af-step span { display:block; color:var(--text2); font-weight:400; font-size:.6rem; }
+    .af-arrow { color:var(--text3); font-size:.75rem; flex-shrink:0; }
+    .auto-tags { display:flex; flex-wrap:wrap; gap:6px; }
+    .auto-screenshot {
+      border-radius:8px; overflow:hidden; border:1px solid var(--border);
+      min-height:100px; display:flex; align-items:center; justify-content:center;
+    }
+    .auto-screenshot.placeholder {
+      color:var(--text3); font-size:.78rem; background:var(--bg);
+      font-style:italic;
+    }
+    .auto-screenshot img { width:100%; height:auto; display:block; }
+
     /* ─── EXPERIENCE ─────────────────────────── */
     .exp-wrap { display:flex; flex-direction:column; gap:12px; }
     .ex-item {
@@ -383,6 +438,7 @@
   <ul class="nav-links">
     <li><a href="#skills">Skills</a></li>
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#automations">Automations</a></li>
     <li><a href="#experience">Experience</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -551,6 +607,155 @@
         <p class="pr-desc">ML image classification model achieving 88% accuracy — built during AI internship at IIT Kanpur using deep learning techniques.</p>
         <div class="pr-tags"><span class="ptag">Python</span><span class="ptag">Scikit-Learn</span></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── AUTOMATION WORKFLOWS ── -->
+<section id="automations">
+  <div class="wrap">
+    <span class="s-label">Automation</span>
+    <h2 class="s-title">Real Client <em>Workflows</em></h2>
+    <p style="color:var(--text2);font-size:.95rem;margin-top:-12px;margin-bottom:36px;max-width:560px;">
+      Production automation systems built for real clients — each workflow runs 24/7, replacing manual work at scale.
+    </p>
+
+    <div class="auto-grid">
+
+      <!-- Card 1 -->
+      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+        <div class="auto-header">
+          <span class="auto-icon">🎙️</span>
+          <div>
+            <div class="auto-platform n8n">n8n</div>
+          </div>
+        </div>
+        <div class="auto-title">Cliniko AI Appointment Booking Agent</div>
+        <p class="auto-desc">Full AI agent for a healthcare clinic — patients chat via WhatsApp or web, agent checks Cliniko calendar, books/reschedules appointments, sends confirmations via Gmail. 106 nodes, voice + text support.</p>
+        <div class="auto-flow">
+          <div class="af-step">Chat<br><span>Trigger</span></div><div class="af-arrow">→</div>
+          <div class="af-step">AI<br><span>Agent</span></div><div class="af-arrow">→</div>
+          <div class="af-step">Cliniko<br><span>API</span></div><div class="af-arrow">→</div>
+          <div class="af-step">Gmail<br><span>Confirm</span></div>
+        </div>
+        <div class="auto-tags">
+          <span class="ptag">n8n</span><span class="ptag">GPT-4</span><span class="ptag">Cliniko</span><span class="ptag">Gmail</span><span class="ptag">Memory</span><span class="ptag">Tool Calls</span>
+        </div>
+        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+        <div class="auto-header">
+          <span class="auto-icon">💬</span>
+          <div>
+            <div class="auto-platform make">Make.com</div>
+          </div>
+        </div>
+        <div class="auto-title">WhatsApp AI Chatbot — Magicrete</div>
+        <p class="auto-desc">AI-powered WhatsApp customer support bot for a building materials company. Customers send queries, GPT-4 reads from a knowledge datastore and replies via 360Dialog — fully automated, 24/7.</p>
+        <div class="auto-flow">
+          <div class="af-step">WhatsApp<br><span>Webhook</span></div><div class="af-arrow">→</div>
+          <div class="af-step">GPT-4<br><span>Assistant</span></div><div class="af-arrow">→</div>
+          <div class="af-step">DataStore<br><span>Lookup</span></div><div class="af-arrow">→</div>
+          <div class="af-step">360Dialog<br><span>Reply</span></div>
+        </div>
+        <div class="auto-tags">
+          <span class="ptag">Make.com</span><span class="ptag">GPT-4</span><span class="ptag">WhatsApp</span><span class="ptag">360Dialog</span><span class="ptag">DataStore</span>
+        </div>
+        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+        <div class="auto-header">
+          <span class="auto-icon">🏢</span>
+          <div>
+            <div class="auto-platform make">Make.com</div>
+          </div>
+        </div>
+        <div class="auto-title">Facebook Lead → GHL + Teams + Outlook</div>
+        <p class="auto-desc">Captures Facebook Lead Ads in real time, creates contact in GoHighLevel, logs to Airtable, notifies sales team on Microsoft Teams, and sends a personalized Outlook email — all within seconds.</p>
+        <div class="auto-flow">
+          <div class="af-step">FB Lead<br><span>Ad Form</span></div><div class="af-arrow">→</div>
+          <div class="af-step">GHL<br><span>Contact</span></div><div class="af-arrow">→</div>
+          <div class="af-step">Airtable<br><span>Log</span></div><div class="af-arrow">→</div>
+          <div class="af-step">Teams +<br><span>Outlook</span></div>
+        </div>
+        <div class="auto-tags">
+          <span class="ptag">Make.com</span><span class="ptag">Facebook Ads</span><span class="ptag">GoHighLevel</span><span class="ptag">Airtable</span><span class="ptag">MS Teams</span>
+        </div>
+        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+        <div class="auto-header">
+          <span class="auto-icon">📄</span>
+          <div>
+            <div class="auto-platform make">Make.com</div>
+          </div>
+        </div>
+        <div class="auto-title">Insurance Proposal OCR → Google Docs</div>
+        <p class="auto-desc">Watches a Google Drive folder for new insurance documents, extracts data using Gemini Vision + GPT-4 OCR, and auto-generates a formatted Google Docs proposal from a template.</p>
+        <div class="auto-flow">
+          <div class="af-step">Google<br><span>Drive</span></div><div class="af-arrow">→</div>
+          <div class="af-step">Gemini<br><span>OCR</span></div><div class="af-arrow">→</div>
+          <div class="af-step">GPT-4<br><span>Extract</span></div><div class="af-arrow">→</div>
+          <div class="af-step">Google<br><span>Docs</span></div>
+        </div>
+        <div class="auto-tags">
+          <span class="ptag">Make.com</span><span class="ptag">Gemini AI</span><span class="ptag">GPT-4</span><span class="ptag">Google Drive</span><span class="ptag">OCR</span>
+        </div>
+        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+        <div class="auto-header">
+          <span class="auto-icon">📝</span>
+          <div>
+            <div class="auto-platform make">Make.com</div>
+          </div>
+        </div>
+        <div class="auto-title">AI WordPress Blog Auto Publisher</div>
+        <p class="auto-desc">Reads topics from Google Sheets, generates full SEO blog posts with GPT-4, uploads AI-generated images via ImageKit, and publishes directly to WordPress — fully automated content pipeline.</p>
+        <div class="auto-flow">
+          <div class="af-step">Google<br><span>Sheets</span></div><div class="af-arrow">→</div>
+          <div class="af-step">GPT-4<br><span>Write</span></div><div class="af-arrow">→</div>
+          <div class="af-step">ImageKit<br><span>Image</span></div><div class="af-arrow">→</div>
+          <div class="af-step">WordPress<br><span>Publish</span></div>
+        </div>
+        <div class="auto-tags">
+          <span class="ptag">Make.com</span><span class="ptag">GPT-4</span><span class="ptag">WordPress</span><span class="ptag">ImageKit</span><span class="ptag">Google Sheets</span>
+        </div>
+        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="auto-card" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
+        <div class="auto-header">
+          <span class="auto-icon">📊</span>
+          <div>
+            <div class="auto-platform n8n">n8n</div>
+          </div>
+        </div>
+        <div class="auto-title">AI Loan Document OCR Processor</div>
+        <p class="auto-desc">Accepts loan documents via web form, extracts structured data with GPT-4, validates and routes based on loan type, syncs results to Google Sheets and sends summary via Gmail.</p>
+        <div class="auto-flow">
+          <div class="af-step">Form<br><span>Trigger</span></div><div class="af-arrow">→</div>
+          <div class="af-step">GPT-4<br><span>Extract</span></div><div class="af-arrow">→</div>
+          <div class="af-step">Sheets<br><span>Sync</span></div><div class="af-arrow">→</div>
+          <div class="af-step">Gmail<br><span>Report</span></div>
+        </div>
+        <div class="auto-tags">
+          <span class="ptag">n8n</span><span class="ptag">GPT-4</span><span class="ptag">Google Drive</span><span class="ptag">Gmail</span><span class="ptag">Google Sheets</span>
+        </div>
+        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+      </div>
+
     </div>
   </div>
 </section>
