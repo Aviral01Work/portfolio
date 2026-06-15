@@ -139,46 +139,70 @@
     /* ─── 3D COMPANION ───────────────────────────── */
     #companion-wrap {
       position: fixed;
-      bottom: 28px;
-      right: 28px;
-      width: 110px;
-      height: 150px;
+      bottom: 24px;
+      right: 24px;
+      width: 160px;
       z-index: 300;
       pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
     }
     #companion-canvas {
-      width: 100%;
-      height: 100%;
+      width: 160px;
+      height: 190px;
       display: block;
+    }
+    .companion-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      margin-top: -6px;
+    }
+    .companion-name {
+      font-family: var(--font2);
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .companion-role {
+      font-size: .62rem;
+      color: var(--text3);
+      letter-spacing: 1px;
     }
     #companion-bubble {
       position: absolute;
-      bottom: 100%;
+      bottom: calc(100% + 8px);
       right: 0;
-      background: rgba(12,15,26,0.92);
-      border: 1px solid var(--border2);
+      background: rgba(7,9,15,0.95);
+      border: 1px solid rgba(74,140,247,0.3);
       border-radius: 12px 12px 2px 12px;
-      padding: 8px 12px;
-      font-size: .72rem;
-      color: var(--text2);
+      padding: 9px 14px;
+      font-size: .73rem;
+      color: var(--text);
       white-space: nowrap;
       opacity: 0;
-      transform: translateY(6px);
-      transition: opacity .3s, transform .3s;
+      transform: translateY(8px) scale(0.95);
+      transition: opacity .35s cubic-bezier(.23,1,.32,1),
+                  transform .35s cubic-bezier(.23,1,.32,1);
       pointer-events: none;
-      backdrop-filter: blur(12px);
-      margin-bottom: 4px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 20px rgba(74,140,247,0.15), 0 4px 24px rgba(0,0,0,0.5);
     }
     #companion-bubble.show {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
     #companion-bubble::after {
       content:'';
-      position:absolute; bottom:-6px; right:14px;
-      width:10px; height:6px;
-      background: rgba(12,15,26,0.92);
-      clip-path: polygon(0 0,100% 0,100% 100%);
+      position: absolute; bottom: -6px; right: 16px;
+      border-left: 6px solid transparent;
+      border-right: 0px solid transparent;
+      border-top: 6px solid rgba(74,140,247,0.3);
     }
 
     .avail-badge {
@@ -1760,228 +1784,292 @@ window.addEventListener('scroll',()=>{
 <!-- ── 3D COMPANION ── -->
 <div id="companion-wrap">
   <div id="companion-bubble"></div>
-  <canvas id="companion-canvas"></canvas>
+  <canvas id="companion-canvas" width="160" height="190"></canvas>
+  <div class="companion-label">
+    <span class="companion-name">ARIA</span>
+    <span class="companion-role">AI Companion</span>
+  </div>
 </div>
 
 <script>
-// ── 3D COMPANION (Three.js low-poly robot) ─────────
+// ── ARIA — AI ORB COMPANION ────────────────────────
 (function(){
   const canvas = document.getElementById('companion-canvas');
   const wrap   = document.getElementById('companion-wrap');
   const bubble = document.getElementById('companion-bubble');
+  if(!canvas) return;
 
-  const W = 110, H = 150;
+  const W = 160, H = 190;
   const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(W, H);
-  renderer.shadowMap.enabled = false;
 
   const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 100);
-  camera.position.set(0, 0.3, 4.2);
+  const camera = new THREE.PerspectiveCamera(48, W/H, 0.1, 50);
+  camera.position.z = 2.9;
 
-  // lights
-  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-  const dirLight = new THREE.DirectionalLight(0x4a8cf7, 1.4);
-  dirLight.position.set(2, 4, 3);
-  scene.add(dirLight);
-  const rimLight = new THREE.DirectionalLight(0xe8aa5a, 0.5);
-  rimLight.position.set(-3, 1, -2);
-  scene.add(rimLight);
+  // ── LIGHTS ──
+  scene.add(new THREE.AmbientLight(0x112244, 1.2));
+  const pL1 = new THREE.PointLight(0x4a8cf7, 3.5, 8);
+  pL1.position.set(1.5, 2, 2);
+  scene.add(pL1);
+  const pL2 = new THREE.PointLight(0xe8aa5a, 1.2, 6);
+  pL2.position.set(-2, -1, 1);
+  scene.add(pL2);
+  const pL3 = new THREE.PointLight(0xffffff, 0.6, 5);
+  pL3.position.set(0, 0, 3);
+  scene.add(pL3);
 
-  // materials
-  const matBody  = new THREE.MeshStandardMaterial({ color:0x0c1830, metalness:.7, roughness:.3 });
-  const matBlue  = new THREE.MeshStandardMaterial({ color:0x4a8cf7, metalness:.5, roughness:.4,
-                      emissive:0x1a3a8a, emissiveIntensity:.4 });
-  const matAmber = new THREE.MeshStandardMaterial({ color:0xe8aa5a, metalness:.4, roughness:.4,
-                      emissive:0x7a4a10, emissiveIntensity:.3 });
-  const matDark  = new THREE.MeshStandardMaterial({ color:0x050810, metalness:.8, roughness:.2 });
-  const matGlass = new THREE.MeshStandardMaterial({ color:0x4a8cf7, transparent:true, opacity:.55,
-                      metalness:.2, roughness:.1, emissive:0x2255cc, emissiveIntensity:.6 });
+  function lerp(a,b,t){ return a+(b-a)*t; }
 
-  const robot = new THREE.Group();
+  // ── ARIA GROUP ──
+  const aria = new THREE.Group();
+  scene.add(aria);
 
-  // ── BODY ──
-  const body = new THREE.Mesh(new THREE.BoxGeometry(.72,.78,.44), matBody);
-  body.position.y = 0;
-  robot.add(body);
-
-  // body stripe (blue accent)
-  const stripe = new THREE.Mesh(new THREE.BoxGeometry(.72,.06,.46), matBlue);
-  stripe.position.y = 0.1;
-  robot.add(stripe);
-
-  // chest panel
-  const chest = new THREE.Mesh(new THREE.BoxGeometry(.36,.3,.46), matDark);
-  chest.position.y = 0.04;
-  robot.add(chest);
-
-  // chest glow dot
-  const chestDot = new THREE.Mesh(new THREE.SphereGeometry(.065,8,8), matAmber);
-  chestDot.position.set(0, 0.08, .24);
-  robot.add(chestDot);
-
-  // ── HEAD ──
-  const headGroup = new THREE.Group();
-  headGroup.position.y = .74;
-  robot.add(headGroup);
-
-  const head = new THREE.Mesh(new THREE.BoxGeometry(.6,.5,.48), matBody);
-  headGroup.add(head);
-
-  // visor
-  const visor = new THREE.Mesh(new THREE.BoxGeometry(.46,.18,.5), matGlass);
-  visor.position.set(0, .06, 0);
-  headGroup.add(visor);
-
-  // eyes (2 small glowing boxes inside visor)
-  const eyeL = new THREE.Mesh(new THREE.BoxGeometry(.1,.09,.02), matBlue);
-  eyeL.position.set(-.13, .06, .26);
-  headGroup.add(eyeL);
-  const eyeR = eyeL.clone();
-  eyeR.position.x = .13;
-  headGroup.add(eyeR);
-
-  // ear fins
-  const earL = new THREE.Mesh(new THREE.BoxGeometry(.06,.22,.38), matBlue);
-  earL.position.set(-.35, .04, 0);
-  headGroup.add(earL);
-  const earR = earL.clone();
-  earR.position.x = .35;
-  headGroup.add(earR);
-
-  // antenna
-  const antBase = new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.18,8), matBody);
-  antBase.position.set(.12, .38, 0);
-  headGroup.add(antBase);
-  const antTip = new THREE.Mesh(new THREE.SphereGeometry(.05,8,8), matAmber);
-  antTip.position.set(.12, .5, 0);
-  headGroup.add(antTip);
-
-  // ── ARMS ──
-  function makeArm(side){
-    const g = new THREE.Group();
-    const upper = new THREE.Mesh(new THREE.BoxGeometry(.18,.38,.18), matBody);
-    upper.position.y = -.19;
-    g.add(upper);
-    const elbow = new THREE.Mesh(new THREE.BoxGeometry(.2,.12,.2), matBlue);
-    elbow.position.y = -.42;
-    g.add(elbow);
-    const lower = new THREE.Mesh(new THREE.BoxGeometry(.16,.3,.16), matBody);
-    lower.position.y = -.62;
-    g.add(lower);
-    const hand = new THREE.Mesh(new THREE.BoxGeometry(.2,.16,.2), matDark);
-    hand.position.y = -.82;
-    g.add(hand);
-    g.position.set(side*.52, .28, 0);
-    return g;
-  }
-  const armL = makeArm(-1);
-  const armR = makeArm( 1);
-  robot.add(armL, armR);
-
-  // ── LEGS ──
-  function makeLeg(side){
-    const g = new THREE.Group();
-    const upper = new THREE.Mesh(new THREE.BoxGeometry(.22,.36,.22), matBody);
-    upper.position.y = -.18;
-    g.add(upper);
-    const knee = new THREE.Mesh(new THREE.BoxGeometry(.24,.1,.24), matBlue);
-    knee.position.y = -.38;
-    g.add(knee);
-    const lower = new THREE.Mesh(new THREE.BoxGeometry(.2,.3,.2), matBody);
-    lower.position.y = -.58;
-    g.add(lower);
-    const foot = new THREE.Mesh(new THREE.BoxGeometry(.26,.1,.3), matDark);
-    foot.position.set(0, -.74, .04);
-    g.add(foot);
-    g.position.set(side*.2, -.46, 0);
-    return g;
-  }
-  const legL = makeLeg(-1);
-  const legR = makeLeg( 1);
-  robot.add(legL, legR);
-
-  // ground glow plane
-  const glowGeo  = new THREE.PlaneGeometry(1.4, .4);
-  const glowMat  = new THREE.MeshBasicMaterial({
-    color:0x4a8cf7, transparent:true, opacity:.12, side:THREE.DoubleSide
+  // 1. outer atmosphere glow
+  const atmosMat = new THREE.MeshBasicMaterial({
+    color:0x4a8cf7, transparent:true, opacity:.055,
+    side:THREE.BackSide, blending:THREE.AdditiveBlending, depthWrite:false
   });
-  const glow = new THREE.Mesh(glowGeo, glowMat);
-  glow.rotation.x = -Math.PI/2;
-  glow.position.y = -1.3;
-  robot.add(glow);
+  aria.add(new THREE.Mesh(new THREE.SphereGeometry(1.15,16,16), atmosMat));
 
-  robot.position.y = -.3;
-  scene.add(robot);
+  // 2. main core
+  const coreMat = new THREE.MeshStandardMaterial({
+    color:0x061428, emissive:0x2255cc,
+    emissiveIntensity:1.4, metalness:.95, roughness:.1
+  });
+  const core = new THREE.Mesh(new THREE.SphereGeometry(.42,48,48), coreMat);
+  aria.add(core);
 
-  // mouse tracking
-  let mouseX = 0, mouseY = 0;
-  document.addEventListener('mousemove', e=>{
-    mouseX = (e.clientX/window.innerWidth  - .5) * 2;
-    mouseY = (e.clientY/window.innerHeight - .5) * 2;
+  // 3. inner bright kernel (additive glow)
+  const kernelMat = new THREE.MeshBasicMaterial({
+    color:0x88c8ff, blending:THREE.AdditiveBlending, depthWrite:false
+  });
+  const kernel = new THREE.Mesh(new THREE.SphereGeometry(.18,16,16), kernelMat);
+  aria.add(kernel);
+
+  // 4. eyes group (tracks mouse)
+  const eyeGroup = new THREE.Group();
+  eyeGroup.position.z = .0;
+  aria.add(eyeGroup);
+
+  const eyeMat = new THREE.MeshBasicMaterial({
+    color:0xffffff, blending:THREE.AdditiveBlending, depthWrite:false
+  });
+  const eyeGeoS = new THREE.SphereGeometry(.055, 12, 12);
+  const eyeL = new THREE.Mesh(eyeGeoS, eyeMat); eyeL.position.set(-.14,.07,.38);
+  const eyeR = new THREE.Mesh(eyeGeoS, eyeMat); eyeR.position.set( .14,.07,.38);
+  const eyeGlowMat = new THREE.MeshBasicMaterial({
+    color:0x4a8cf7, transparent:true, opacity:.5,
+    blending:THREE.AdditiveBlending, depthWrite:false
+  });
+  const eyeGlowGeo = new THREE.SphereGeometry(.095,12,12);
+  const egL = new THREE.Mesh(eyeGlowGeo, eyeGlowMat); egL.position.copy(eyeL.position);
+  const egR = new THREE.Mesh(eyeGlowGeo, eyeGlowMat); egR.position.copy(eyeR.position);
+  eyeGroup.add(eyeL, eyeR, egL, egR);
+
+  // mouth (thin arc — just 2 small spheres)
+  const mouthMat = new THREE.MeshBasicMaterial({
+    color:0x4a8cf7, transparent:true, opacity:.6,
+    blending:THREE.AdditiveBlending, depthWrite:false
+  });
+  const mGeo = new THREE.SphereGeometry(.025,8,8);
+  [-0.09,0,0.09].forEach((x,i)=>{
+    const m = new THREE.Mesh(mGeo, mouthMat);
+    m.position.set(x, -.1-.01*Math.abs(i-1), .41);
+    eyeGroup.add(m);
   });
 
-  // bubble messages
-  const msgs = [
-    "Let's build something! 🚀",
-    "Automating the boring stuff ⚡",
-    "n8n + Make = ❤️",
-    "AI is the future 🤖",
-    "Open to work! 👋",
-    "Voice AI is wild 🎙️",
+  // 5. wireframe icosahedron shell
+  const icoGeo   = new THREE.IcosahedronGeometry(.78, 1);
+  const icoEdges = new THREE.EdgesGeometry(icoGeo);
+  const ico = new THREE.LineSegments(icoEdges, new THREE.LineBasicMaterial({
+    color:0x4a8cf7, transparent:true, opacity:.15,
+    blending:THREE.AdditiveBlending, depthWrite:false
+  }));
+  aria.add(ico);
+
+  // 6. energy rings
+  function ring(iR, oR, color, opacity){
+    const m = new THREE.Mesh(
+      new THREE.RingGeometry(iR, oR, 80),
+      new THREE.MeshBasicMaterial({ color, side:THREE.DoubleSide,
+        transparent:true, opacity, blending:THREE.AdditiveBlending, depthWrite:false })
+    );
+    return m;
+  }
+  const r1 = ring(.62,.68, 0x4a8cf7, .75);  r1.rotation.x = Math.PI/2;
+  const r2 = ring(.76,.80, 0xe8aa5a, .45);  r2.rotation.set(1.1,.4,.3);
+  const r3 = ring(.88,.91, 0x4a8cf7, .28);  r3.rotation.set(-.7,.9,-.5);
+  // thin bright equator accent
+  const r4 = ring(.61,.635,0xaad4ff,.9);   r4.rotation.x = Math.PI/2;
+  aria.add(r1,r2,r3,r4);
+
+  // 7. particle cloud
+  const PC = 140;
+  const pPos  = new Float32Array(PC*3);
+  const pData = [];
+  for(let i=0;i<PC;i++){
+    const phi   = Math.acos(2*Math.random()-1);
+    const theta = Math.random()*Math.PI*2;
+    const r     = .92+Math.random()*.52;
+    const spd   = (.4+Math.random()*.9)*(Math.random()>.5?1:-1);
+    const incl  = (Math.random()-.5)*Math.PI*.8;
+    pData.push({phi,theta,r,spd,incl});
+    pPos[i*3]  =r*Math.sin(phi)*Math.cos(theta);
+    pPos[i*3+1]=r*Math.cos(phi);
+    pPos[i*3+2]=r*Math.sin(phi)*Math.sin(theta);
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+  const ptsMat = new THREE.PointsMaterial({
+    color:0xc0d8ff, size:.028, transparent:true, opacity:.9,
+    blending:THREE.AdditiveBlending, depthWrite:false
+  });
+  const pts = new THREE.Points(pGeo, ptsMat);
+  aria.add(pts);
+
+  // 8. neural lines (updated every 12 frames)
+  const NL = 18;
+  const nlPos = new Float32Array(NL*2*3);
+  const nlGeo = new THREE.BufferGeometry();
+  nlGeo.setAttribute('position', new THREE.BufferAttribute(nlPos,3));
+  const nlMesh = new THREE.LineSegments(nlGeo, new THREE.LineBasicMaterial({
+    color:0x3a7aee, transparent:true, opacity:.22,
+    blending:THREE.AdditiveBlending, depthWrite:false
+  }));
+  aria.add(nlMesh);
+
+  // ground reflection disc
+  const gReflMat = new THREE.MeshBasicMaterial({
+    color:0x4a8cf7, transparent:true, opacity:.08,
+    side:THREE.DoubleSide, blending:THREE.AdditiveBlending, depthWrite:false
+  });
+  const gRefl = new THREE.Mesh(new THREE.CircleGeometry(.65,40), gReflMat);
+  gRefl.rotation.x = -Math.PI/2;
+  gRefl.position.y = -1.05;
+  aria.add(gRefl);
+
+  // ── STATE ──
+  let mouseX=0,mouseY=0,isHover=false,burstT=0,frame=0;
+  let sRotY=0,sRotX=0;
+  let lastBubbleIdx = -1;
+
+  wrap.style.pointerEvents='auto';
+  canvas.style.cursor='pointer';
+
+  document.addEventListener('mousemove',e=>{
+    mouseX=(e.clientX/window.innerWidth-.5)*2;
+    mouseY=(e.clientY/window.innerHeight-.5)*2;
+  });
+  wrap.addEventListener('mouseenter',()=>isHover=true);
+  wrap.addEventListener('mouseleave',()=>isHover=false);
+
+  // ── SPEECH BUBBLE ──
+  const msgs=[
+    '⚡ Let\'s automate something',
+    '🤖 AI runs on vibes (and n8n)',
+    '🚀 Click me for good luck',
+    '🎙️ Voice AI is my jam',
+    '💡 Big ideas. Zero manual work',
+    '👋 Hire Aviral. Trust me.',
+    '🔮 The future is automated',
+    '⚙️ 106 nodes? Easy.',
   ];
-  let bubbleTimer;
-  function showBubble(){
-    bubble.textContent = msgs[Math.floor(Math.random()*msgs.length)];
+  let bTimer;
+  function showBubble(idx){
+    let i = idx!==undefined?idx:Math.floor(Math.random()*msgs.length);
+    if(i===lastBubbleIdx) i=(i+1)%msgs.length;
+    lastBubbleIdx=i;
+    bubble.textContent=msgs[i];
     bubble.classList.add('show');
-    clearTimeout(bubbleTimer);
-    bubbleTimer = setTimeout(()=>bubble.classList.remove('show'), 3000);
+    clearTimeout(bTimer);
+    bTimer=setTimeout(()=>bubble.classList.remove('show'),3500);
   }
-  // show bubble every ~12s, first after 3s
-  setTimeout(showBubble, 3000);
-  setInterval(showBubble, 12000);
-  wrap.style.pointerEvents = 'auto';
-  canvas.addEventListener('click', showBubble);
-  canvas.style.cursor = 'pointer';
+  setTimeout(()=>showBubble(6),2800);
+  setInterval(showBubble,14000);
+  canvas.addEventListener('click',()=>{ showBubble(); burstT=1; });
 
-  // animation
-  let t = 0;
+  // ── ANIMATE ──
+  let t=0;
   function animate(){
     requestAnimationFrame(animate);
-    t += .016;
+    t+=.016; frame++;
+    const spd = isHover?2.2:1.0;
 
-    // idle bob
-    robot.position.y = -.3 + Math.sin(t*1.6)*.045;
-    // slight sway
-    robot.rotation.z = Math.sin(t*.8)*.018;
+    // bob
+    aria.position.y = Math.sin(t*1.3)*.072;
 
-    // head tracks mouse (subtle)
-    headGroup.rotation.y = mouseX * .22;
-    headGroup.rotation.x = mouseY * -.12;
+    // mouse tilt
+    sRotY=lerp(sRotY,mouseX*.36,.07);
+    sRotX=lerp(sRotX,mouseY*-.22,.07);
+    aria.rotation.y=sRotY;
+    aria.rotation.x=sRotX;
 
-    // arm swing idle
-    armL.rotation.x = Math.sin(t*1.6)*.12;
-    armR.rotation.x = Math.sin(t*1.6+Math.PI)*.12;
+    // core pulse
+    const p = 1+Math.sin(t*2.6)*.07;
+    core.scale.setScalar(p);
+    coreMat.emissiveIntensity = 1.4+Math.sin(t*2.6)*.35;
+    kernel.scale.setScalar(p*1.15);
 
-    // leg idle
-    legL.rotation.x = Math.sin(t*1.6+Math.PI)*.06;
-    legR.rotation.x = Math.sin(t*1.6)*.06;
+    // eyes: mouse look + blink
+    eyeGroup.rotation.y = mouseX*.18;
+    eyeGroup.rotation.x = mouseY*-.12;
+    const blinkCycle = t%3.8;
+    const bScale = blinkCycle>3.65?Math.max(.04,1-(blinkCycle-3.65)*55):1;
+    eyeL.scale.y=bScale; eyeR.scale.y=bScale;
+    egL.scale.y=bScale;  egR.scale.y=bScale;
 
-    // antenna tip pulse (scale)
-    const pulse = 1 + Math.sin(t*3)*.15;
-    antTip.scale.setScalar(pulse);
+    // rings
+    r1.rotation.z += .009*spd;
+    r4.rotation.z += .009*spd;
+    r2.rotation.z -= .013*spd;
+    r2.rotation.x += .004*spd;
+    r3.rotation.z += .006*spd;
+    r3.rotation.y += .005*spd;
 
-    // eye blink every ~4s
-    const blinkPhase = (t % 4);
-    const eyeScale = blinkPhase > 3.85 ? Math.max(0.05, 1-(blinkPhase-3.85)*40) : 1;
-    eyeL.scale.y = eyeScale;
-    eyeR.scale.y = eyeScale;
+    // icosahedron
+    ico.rotation.y += .005*spd;
+    ico.rotation.z += .003*spd;
 
-    // body subtle rotation toward mouse
-    robot.rotation.y = mouseX * .18;
+    // burst
+    if(burstT>0){ burstT=Math.max(0,burstT-.025); }
+    const bScale2 = burstT>0 ? 1+Math.sin(burstT*Math.PI)*0.28 : 1;
 
-    renderer.render(scene, camera);
+    // particles
+    const pa=pGeo.attributes.position.array;
+    for(let i=0;i<PC;i++){
+      const d=pData[i];
+      d.theta+=d.spd*.009*spd;
+      const r2=d.r*bScale2;
+      pa[i*3  ]=r2*Math.sin(d.phi)*Math.cos(d.theta);
+      pa[i*3+1]=r2*Math.cos(d.phi);
+      pa[i*3+2]=r2*Math.sin(d.phi)*Math.sin(d.theta);
+    }
+    pGeo.attributes.position.needsUpdate=true;
+
+    // neural lines — update every 14 frames
+    if(frame%14===0){
+      const nl=nlGeo.attributes.position.array;
+      for(let i=0;i<NL;i++){
+        const a=Math.floor(Math.random()*PC);
+        const b=Math.floor(Math.random()*PC);
+        nl[i*6  ]=pa[a*3];  nl[i*6+1]=pa[a*3+1]; nl[i*6+2]=pa[a*3+2];
+        nl[i*6+3]=pa[b*3];  nl[i*6+4]=pa[b*3+1]; nl[i*6+5]=pa[b*3+2];
+      }
+      nlGeo.attributes.position.needsUpdate=true;
+    }
+
+    // atmosphere breathe
+    atmosMat.opacity=.055+Math.sin(t*1.1)*.02;
+
+    // ground disc pulse
+    gRefl.scale.setScalar(1+Math.sin(t*1.3)*.08);
+
+    // light dance
+    pL1.intensity=3.5+Math.sin(t*2.2)*.8;
+
+    renderer.render(scene,camera);
   }
   animate();
 })();
