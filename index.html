@@ -279,122 +279,169 @@
 
     /* ─── AUTOMATION WORKFLOWS ──────────────── */
     .auto-grid {
-      display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
       gap:20px;
     }
     .auto-card {
       background:var(--bg2); border:1px solid var(--border);
-      border-radius:var(--radius); padding:26px 28px;
-      cursor:pointer;
-      display:flex; flex-direction:column; gap:14px;
-      transition:border-color .25s, background .25s;
+      border-radius:var(--radius); padding:28px;
+      cursor:pointer; position:relative; overflow:hidden;
+      display:flex; flex-direction:column; gap:0;
+      transition:border-color .25s, background .25s, transform .2s;
       will-change:transform;
     }
-    .auto-card:hover { border-color:rgba(74,140,247,0.25); background:var(--bg3); }
-    .auto-header { display:flex; align-items:center; justify-content:space-between; }
-    .auto-icon { font-size:1.6rem; }
+    .auto-card::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,var(--blue-dim) 0%,transparent 60%);
+      opacity:0; transition:opacity .3s;
+    }
+    .auto-card:hover { border-color:rgba(74,140,247,0.3); background:var(--bg3); }
+    .auto-card:hover::before { opacity:1; }
+
+    /* icon + platform row */
+    .ac-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; }
+    .ac-icon {
+      width:52px; height:52px; border-radius:14px;
+      background:var(--bg3); border:1px solid var(--border2);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.5rem; flex-shrink:0;
+    }
     .auto-platform {
-      font-size:.68rem; font-weight:700; padding:3px 10px;
-      border-radius:20px; letter-spacing:.04em;
+      font-size:.66rem; font-weight:700; padding:4px 11px;
+      border-radius:20px; letter-spacing:.05em;
     }
     .auto-platform.make {
       background:rgba(132,204,22,0.1); border:1px solid rgba(132,204,22,0.25);
       color:#84cc16;
     }
     .auto-platform.n8n {
-      background:rgba(232,90,90,0.1); border:1px solid rgba(232,90,90,0.25);
+      background:rgba(248,113,113,0.12); border:1px solid rgba(248,113,113,0.28);
       color:#f87171;
     }
-    .auto-title { font-size:.95rem; font-weight:700; font-family:var(--font2); color:var(--text); line-height:1.4; }
-    .auto-desc { font-size:.8rem; color:var(--text2); line-height:1.75; }
-    .auto-flow {
-      display:flex; align-items:center; gap:4px; flex-wrap:nowrap;
-      overflow-x:auto; padding:12px 14px;
-      background:var(--bg); border:1px solid var(--border);
-      border-radius:10px; scrollbar-width:none;
-    }
-    .auto-flow::-webkit-scrollbar { display:none; }
-    .af-step {
-      background:var(--blue-dim); border:1px solid var(--blue-b);
-      border-radius:8px; padding:6px 10px; text-align:center;
-      font-size:.65rem; font-weight:600; color:var(--blue);
-      white-space:nowrap; flex-shrink:0; line-height:1.4;
-    }
-    .af-step span { display:block; color:var(--text2); font-weight:400; font-size:.6rem; }
-    .af-arrow { color:var(--text3); font-size:.75rem; flex-shrink:0; }
-    .auto-tags { display:flex; flex-wrap:wrap; gap:6px; }
-    .auto-screenshot {
-      border-radius:8px; overflow:hidden; border:1px solid var(--border);
-      min-height:100px; display:flex; align-items:center; justify-content:center;
-    }
-    .auto-screenshot.placeholder {
-      color:var(--text3); font-size:.78rem; background:var(--bg);
-      font-style:italic;
-    }
-    .auto-screenshot img { width:100%; height:auto; display:block; }
 
-    /* ─── AUTO-CARD MODAL ────────────────────── */
+    /* industry label */
+    .ac-industry {
+      font-size:.65rem; font-weight:700; letter-spacing:.1em;
+      text-transform:uppercase; color:var(--blue); margin-bottom:8px;
+    }
+    .auto-title {
+      font-size:1rem; font-weight:700; font-family:var(--font2);
+      color:var(--text); line-height:1.35; margin-bottom:10px;
+    }
+    .auto-desc {
+      font-size:.8rem; color:var(--text2); line-height:1.75;
+      margin-bottom:22px; flex:1;
+    }
+
+    /* metrics */
+    .ac-metrics {
+      display:flex; gap:0; border-top:1px solid var(--border);
+      padding-top:18px; margin-bottom:18px;
+    }
+    .ac-metric { flex:1; }
+    .ac-metric + .ac-metric { border-left:1px solid var(--border); padding-left:18px; }
+    .ac-num {
+      font-family:var(--font2); font-size:1.35rem; font-weight:700;
+      color:var(--text); line-height:1; margin-bottom:4px;
+    }
+    .ac-label { font-size:.68rem; color:var(--text3); font-weight:500; }
+
+    /* cta */
+    .ac-cta {
+      font-size:.78rem; font-weight:600; color:var(--blue);
+      letter-spacing:.02em; transition:gap .2s;
+      display:flex; align-items:center; gap:5px;
+    }
+    .auto-card:hover .ac-cta { gap:8px; }
+
+    /* ─── AUTO-CARD MODAL (right panel) ──────── */
     #auto-modal-backdrop {
       position:fixed; inset:0; z-index:10000;
-      background:rgba(7,9,15,0.82); backdrop-filter:blur(8px);
-      display:flex; align-items:center; justify-content:center;
+      background:rgba(7,9,15,0.75); backdrop-filter:blur(6px);
       opacity:0; pointer-events:none;
       transition:opacity .25s ease;
     }
     #auto-modal-backdrop.open { opacity:1; pointer-events:all; }
     #auto-modal {
-      background:var(--bg2); border:1px solid var(--border2);
-      border-radius:18px; width:min(700px,92vw); max-height:88vh;
-      overflow-y:auto; padding:40px 44px;
-      transform:translateY(32px) scale(0.97);
-      transition:transform .28s cubic-bezier(.22,1,.36,1);
-      position:relative; scrollbar-width:thin; scrollbar-color:var(--border) transparent;
+      position:fixed; top:0; right:0; bottom:0;
+      width:min(560px,96vw);
+      background:var(--bg2); border-left:1px solid var(--border2);
+      overflow-y:auto; padding:40px 40px 60px;
+      transform:translateX(40px);
+      transition:transform .3s cubic-bezier(.22,1,.36,1);
+      scrollbar-width:thin; scrollbar-color:var(--border) transparent;
     }
-    #auto-modal-backdrop.open #auto-modal {
-      transform:translateY(0) scale(1);
+    #auto-modal-backdrop.open #auto-modal { transform:translateX(0); }
+
+    /* modal header */
+    .modal-head {
+      display:flex; align-items:flex-start;
+      justify-content:space-between; gap:16px; margin-bottom:24px;
     }
     #modal-close {
-      position:absolute; top:18px; right:20px;
       background:var(--bg3); border:1px solid var(--border);
-      color:var(--text2); width:34px; height:34px;
-      border-radius:50%; font-size:1.1rem; cursor:pointer;
+      color:var(--text2); width:34px; height:34px; flex-shrink:0;
+      border-radius:50%; font-size:1rem; cursor:pointer;
       display:flex; align-items:center; justify-content:center;
       transition:background .2s, color .2s;
     }
     #modal-close:hover { background:var(--blue-dim); color:var(--text); }
-    #modal-platform { display:inline-block; margin-bottom:14px; }
+
+    #modal-platform { display:inline-flex; margin-bottom:10px; }
+    #modal-industry {
+      font-size:.65rem; font-weight:700; letter-spacing:.1em;
+      text-transform:uppercase; color:var(--blue); margin-bottom:10px;
+    }
     #modal-title {
-      font-family:var(--font2); font-size:1.55rem; font-weight:700;
-      color:var(--text); margin-bottom:14px; line-height:1.25;
+      font-family:var(--font2); font-size:1.3rem; font-weight:700;
+      color:var(--text); margin-bottom:14px; line-height:1.3;
     }
     #modal-desc {
-      color:var(--text2); font-size:.95rem; line-height:1.7;
-      margin-bottom:28px;
+      color:var(--text2); font-size:.88rem; line-height:1.75;
+      margin-bottom:28px; padding-bottom:24px;
+      border-bottom:1px solid var(--border);
     }
+
+    /* modal metrics strip */
+    #modal-metrics {
+      display:flex; gap:0; margin-bottom:28px;
+    }
+    .mm-item { flex:1; padding:16px 0; }
+    .mm-item + .mm-item { border-left:1px solid var(--border); padding-left:20px; }
+    .mm-num {
+      font-family:var(--font2); font-size:1.5rem; font-weight:700;
+      color:var(--text); margin-bottom:4px;
+    }
+    .mm-label { font-size:.68rem; color:var(--text3); }
+
     .modal-section-label {
-      font-size:.72rem; font-weight:600; letter-spacing:.08em;
-      text-transform:uppercase; color:var(--text3); margin-bottom:12px;
+      font-size:.66rem; font-weight:700; letter-spacing:.1em;
+      text-transform:uppercase; color:var(--text3); margin-bottom:14px;
     }
+
+    /* flow in modal */
     #modal-flow {
       display:flex; flex-wrap:wrap; align-items:center; gap:6px;
-      margin-bottom:28px;
+      margin-bottom:28px; padding:18px;
+      background:var(--bg); border:1px solid var(--border); border-radius:12px;
     }
     #modal-flow .af-step {
-      background:var(--bg3); border:1px solid var(--border2);
-      border-radius:8px; padding:10px 14px; font-size:.8rem;
-      text-align:center; min-width:70px; line-height:1.3;
+      background:var(--blue-dim); border:1px solid var(--blue-b);
+      border-radius:8px; padding:8px 12px; font-size:.75rem;
+      text-align:center; line-height:1.35; color:var(--text);
     }
-    #modal-flow .af-step span { display:block; color:var(--blue); font-size:.72rem; }
-    #modal-flow .af-arrow { color:var(--text3); font-size:1rem; }
+    #modal-flow .af-step span { display:block; color:var(--blue); font-size:.68rem; margin-top:2px; }
+    #modal-flow .af-arrow { color:var(--text3); font-size:.9rem; }
+
     #modal-details {
-      color:var(--text2); font-size:.9rem; line-height:1.7;
+      color:var(--text2); font-size:.84rem; line-height:1.8;
       margin-bottom:24px; white-space:pre-line;
     }
     #modal-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:28px; }
     #modal-screenshot {
       border-radius:10px; overflow:hidden; border:1px solid var(--border);
-      min-height:120px; display:flex; align-items:center; justify-content:center;
-      color:var(--text3); font-size:.8rem; font-style:italic; background:var(--bg);
+      min-height:110px; display:flex; align-items:center; justify-content:center;
+      color:var(--text3); font-size:.78rem; font-style:italic; background:var(--bg);
     }
     #modal-screenshot img { width:100%; height:auto; display:block; }
 
@@ -692,134 +739,134 @@
 
       <!-- Card 1 -->
       <div class="auto-card" data-id="0" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
-        <div class="auto-header">
-          <span class="auto-icon">🎙️</span>
-          <div>
-            <div class="auto-platform n8n">n8n</div>
+        <div class="ac-top">
+          <div class="ac-icon">🎙️</div>
+          <div class="auto-platform n8n">n8n</div>
+        </div>
+        <div class="ac-industry">Healthcare</div>
+        <div class="auto-title">Cliniko AI Appointment Booking Agent</div>
+        <p class="auto-desc">Full AI agent for a healthcare clinic — patients chat via WhatsApp or web, agent checks Cliniko calendar, books/reschedules, sends Gmail confirmations. Voice + text support.</p>
+        <div class="ac-metrics">
+          <div class="ac-metric">
+            <div class="ac-num">106</div>
+            <div class="ac-label">Nodes Built</div>
+          </div>
+          <div class="ac-metric">
+            <div class="ac-num">24/7</div>
+            <div class="ac-label">Zero Missed Appts</div>
           </div>
         </div>
-        <div class="auto-title">Cliniko AI Appointment Booking Agent</div>
-        <p class="auto-desc">Full AI agent for a healthcare clinic — patients chat via WhatsApp or web, agent checks Cliniko calendar, books/reschedules appointments, sends confirmations via Gmail. 106 nodes, voice + text support.</p>
-        <div class="auto-flow">
-          <div class="af-step">Chat<br><span>Trigger</span></div><div class="af-arrow">→</div>
-          <div class="af-step">AI<br><span>Agent</span></div><div class="af-arrow">→</div>
-          <div class="af-step">Cliniko<br><span>API</span></div><div class="af-arrow">→</div>
-          <div class="af-step">Gmail<br><span>Confirm</span></div>
-        </div>
-        <div class="auto-tags">
-          <span class="ptag">n8n</span><span class="ptag">GPT-4</span><span class="ptag">Cliniko</span><span class="ptag">Gmail</span><span class="ptag">Memory</span><span class="ptag">Tool Calls</span>
-        </div>
-        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+        <div class="ac-cta">View Workflow <span>→</span></div>
       </div>
 
       <!-- Card 2 -->
       <div class="auto-card" data-id="1" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
-        <div class="auto-header">
-          <span class="auto-icon">💬</span>
-          <div>
-            <div class="auto-platform make">Make.com</div>
+        <div class="ac-top">
+          <div class="ac-icon">💬</div>
+          <div class="auto-platform make">Make.com</div>
+        </div>
+        <div class="ac-industry">Customer Support</div>
+        <div class="auto-title">WhatsApp AI Chatbot — Magicrete</div>
+        <p class="auto-desc">AI-powered WhatsApp support bot for a building materials company. GPT-4 reads from a knowledge DataStore and replies via 360Dialog — fully automated, zero agents.</p>
+        <div class="ac-metrics">
+          <div class="ac-metric">
+            <div class="ac-num">80%</div>
+            <div class="ac-label">Queries Automated</div>
+          </div>
+          <div class="ac-metric">
+            <div class="ac-num">24/7</div>
+            <div class="ac-label">Active Support</div>
           </div>
         </div>
-        <div class="auto-title">WhatsApp AI Chatbot — Magicrete</div>
-        <p class="auto-desc">AI-powered WhatsApp customer support bot for a building materials company. Customers send queries, GPT-4 reads from a knowledge datastore and replies via 360Dialog — fully automated, 24/7.</p>
-        <div class="auto-flow">
-          <div class="af-step">WhatsApp<br><span>Webhook</span></div><div class="af-arrow">→</div>
-          <div class="af-step">GPT-4<br><span>Assistant</span></div><div class="af-arrow">→</div>
-          <div class="af-step">DataStore<br><span>Lookup</span></div><div class="af-arrow">→</div>
-          <div class="af-step">360Dialog<br><span>Reply</span></div>
-        </div>
-        <div class="auto-tags">
-          <span class="ptag">Make.com</span><span class="ptag">GPT-4</span><span class="ptag">WhatsApp</span><span class="ptag">360Dialog</span><span class="ptag">DataStore</span>
-        </div>
-        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+        <div class="ac-cta">View Workflow <span>→</span></div>
       </div>
 
       <!-- Card 3 -->
       <div class="auto-card" data-id="2" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
-        <div class="auto-header">
-          <span class="auto-icon">🏢</span>
-          <div>
-            <div class="auto-platform make">Make.com</div>
+        <div class="ac-top">
+          <div class="ac-icon">🏢</div>
+          <div class="auto-platform make">Make.com</div>
+        </div>
+        <div class="ac-industry">Lead Generation</div>
+        <div class="auto-title">Facebook Lead → GHL + Teams + Outlook</div>
+        <p class="auto-desc">Captures Facebook Lead Ads in real time, creates contact in GoHighLevel, logs to Airtable, notifies sales via Microsoft Teams, sends personalised Outlook email — all in under 8 seconds.</p>
+        <div class="ac-metrics">
+          <div class="ac-metric">
+            <div class="ac-num">&lt;8s</div>
+            <div class="ac-label">End-to-End Latency</div>
+          </div>
+          <div class="ac-metric">
+            <div class="ac-num">Zero</div>
+            <div class="ac-label">Manual Data Entry</div>
           </div>
         </div>
-        <div class="auto-title">Facebook Lead → GHL + Teams + Outlook</div>
-        <p class="auto-desc">Captures Facebook Lead Ads in real time, creates contact in GoHighLevel, logs to Airtable, notifies sales team on Microsoft Teams, and sends a personalized Outlook email — all within seconds.</p>
-        <div class="auto-flow">
-          <div class="af-step">FB Lead<br><span>Ad Form</span></div><div class="af-arrow">→</div>
-          <div class="af-step">GHL<br><span>Contact</span></div><div class="af-arrow">→</div>
-          <div class="af-step">Airtable<br><span>Log</span></div><div class="af-arrow">→</div>
-          <div class="af-step">Teams +<br><span>Outlook</span></div>
-        </div>
-        <div class="auto-tags">
-          <span class="ptag">Make.com</span><span class="ptag">Facebook Ads</span><span class="ptag">GoHighLevel</span><span class="ptag">Airtable</span><span class="ptag">MS Teams</span>
-        </div>
-        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+        <div class="ac-cta">View Workflow <span>→</span></div>
       </div>
 
       <!-- Card 4 -->
       <div class="auto-card" data-id="3" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
-        <div class="auto-header">
-          <span class="auto-icon">📄</span>
-          <div>
-            <div class="auto-platform make">Make.com</div>
+        <div class="ac-top">
+          <div class="ac-icon">📄</div>
+          <div class="auto-platform make">Make.com</div>
+        </div>
+        <div class="ac-industry">Insurance · Document AI</div>
+        <div class="auto-title">Insurance Proposal OCR → Google Docs</div>
+        <p class="auto-desc">Watches a Google Drive folder, extracts data from insurance docs using Gemini Vision + GPT-4, and auto-generates a formatted Google Docs proposal — zero manual data entry.</p>
+        <div class="ac-metrics">
+          <div class="ac-metric">
+            <div class="ac-num">40s</div>
+            <div class="ac-label">Per Document</div>
+          </div>
+          <div class="ac-metric">
+            <div class="ac-num">Zero</div>
+            <div class="ac-label">Manual Entry</div>
           </div>
         </div>
-        <div class="auto-title">Insurance Proposal OCR → Google Docs</div>
-        <p class="auto-desc">Watches a Google Drive folder for new insurance documents, extracts data using Gemini Vision + GPT-4 OCR, and auto-generates a formatted Google Docs proposal from a template.</p>
-        <div class="auto-flow">
-          <div class="af-step">Google<br><span>Drive</span></div><div class="af-arrow">→</div>
-          <div class="af-step">Gemini<br><span>OCR</span></div><div class="af-arrow">→</div>
-          <div class="af-step">GPT-4<br><span>Extract</span></div><div class="af-arrow">→</div>
-          <div class="af-step">Google<br><span>Docs</span></div>
-        </div>
-        <div class="auto-tags">
-          <span class="ptag">Make.com</span><span class="ptag">Gemini AI</span><span class="ptag">GPT-4</span><span class="ptag">Google Drive</span><span class="ptag">OCR</span>
-        </div>
-        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+        <div class="ac-cta">View Workflow <span>→</span></div>
       </div>
 
       <!-- Card 5 -->
       <div class="auto-card" data-id="4" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
-        <div class="auto-header">
-          <span class="auto-icon">📝</span>
-          <div>
-            <div class="auto-platform make">Make.com</div>
+        <div class="ac-top">
+          <div class="ac-icon">📝</div>
+          <div class="auto-platform make">Make.com</div>
+        </div>
+        <div class="ac-industry">Content · SEO</div>
+        <div class="auto-title">AI WordPress Blog Auto Publisher</div>
+        <p class="auto-desc">Reads topics from Google Sheets, writes full SEO blog posts with GPT-4, generates images via DALL·E, and publishes to WordPress daily — a fully automated content pipeline.</p>
+        <div class="ac-metrics">
+          <div class="ac-metric">
+            <div class="ac-num">30</div>
+            <div class="ac-label">Posts / Month</div>
+          </div>
+          <div class="ac-metric">
+            <div class="ac-num">Zero</div>
+            <div class="ac-label">Human Writers</div>
           </div>
         </div>
-        <div class="auto-title">AI WordPress Blog Auto Publisher</div>
-        <p class="auto-desc">Reads topics from Google Sheets, generates full SEO blog posts with GPT-4, uploads AI-generated images via ImageKit, and publishes directly to WordPress — fully automated content pipeline.</p>
-        <div class="auto-flow">
-          <div class="af-step">Google<br><span>Sheets</span></div><div class="af-arrow">→</div>
-          <div class="af-step">GPT-4<br><span>Write</span></div><div class="af-arrow">→</div>
-          <div class="af-step">ImageKit<br><span>Image</span></div><div class="af-arrow">→</div>
-          <div class="af-step">WordPress<br><span>Publish</span></div>
-        </div>
-        <div class="auto-tags">
-          <span class="ptag">Make.com</span><span class="ptag">GPT-4</span><span class="ptag">WordPress</span><span class="ptag">ImageKit</span><span class="ptag">Google Sheets</span>
-        </div>
-        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+        <div class="ac-cta">View Workflow <span>→</span></div>
       </div>
 
       <!-- Card 6 -->
       <div class="auto-card" data-id="5" data-tilt data-tilt-max="3" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.03">
-        <div class="auto-header">
-          <span class="auto-icon">📊</span>
-          <div>
-            <div class="auto-platform n8n">n8n</div>
+        <div class="ac-top">
+          <div class="ac-icon">📊</div>
+          <div class="auto-platform n8n">n8n</div>
+        </div>
+        <div class="ac-industry">Finance · Document AI</div>
+        <div class="auto-title">AI Loan Document OCR Processor</div>
+        <p class="auto-desc">Accepts loan documents via web form, extracts structured data with GPT-4, validates and routes by loan type, syncs to Google Sheets and sends Gmail report — instant processing.</p>
+        <div class="ac-metrics">
+          <div class="ac-metric">
+            <div class="ac-num">39</div>
+            <div class="ac-label">Nodes Built</div>
+          </div>
+          <div class="ac-metric">
+            <div class="ac-num">3</div>
+            <div class="ac-label">Loan Types Handled</div>
           </div>
         </div>
-        <div class="auto-title">AI Loan Document OCR Processor</div>
-        <p class="auto-desc">Accepts loan documents via web form, extracts structured data with GPT-4, validates and routes based on loan type, syncs results to Google Sheets and sends summary via Gmail.</p>
-        <div class="auto-flow">
-          <div class="af-step">Form<br><span>Trigger</span></div><div class="af-arrow">→</div>
-          <div class="af-step">GPT-4<br><span>Extract</span></div><div class="af-arrow">→</div>
-          <div class="af-step">Sheets<br><span>Sync</span></div><div class="af-arrow">→</div>
-          <div class="af-step">Gmail<br><span>Report</span></div>
-        </div>
-        <div class="auto-tags">
-          <span class="ptag">n8n</span><span class="ptag">GPT-4</span><span class="ptag">Google Drive</span><span class="ptag">Gmail</span><span class="ptag">Google Sheets</span>
-        </div>
-        <div class="auto-screenshot placeholder">📸 Screenshot coming soon</div>
+        <div class="ac-cta">View Workflow <span>→</span></div>
       </div>
 
     </div>
@@ -932,10 +979,16 @@
 <!-- ── AUTOMATION MODAL ── -->
 <div id="auto-modal-backdrop" role="dialog" aria-modal="true">
   <div id="auto-modal">
-    <button id="modal-close" aria-label="Close">✕</button>
-    <div id="modal-platform"></div>
+    <div class="modal-head">
+      <div>
+        <div id="modal-platform"></div>
+        <div id="modal-industry"></div>
+      </div>
+      <button id="modal-close" aria-label="Close">✕</button>
+    </div>
     <div id="modal-title"></div>
     <p id="modal-desc"></p>
+    <div id="modal-metrics"></div>
     <div class="modal-section-label">Workflow</div>
     <div id="modal-flow"></div>
     <div class="modal-section-label">How it works</div>
@@ -1187,6 +1240,8 @@ window.addEventListener('scroll',()=>{
       id: 0,
       platform: 'n8n',
       icon: '🎙️',
+      industry: 'Healthcare',
+      metrics: [{num:'106', label:'Nodes Built'}, {num:'24/7', label:'Zero Missed Appts'}],
       title: 'Cliniko AI Appointment Booking Agent',
       desc: 'Full AI agent for a healthcare clinic — patients chat via WhatsApp or web, the agent checks Cliniko calendar in real time, books or reschedules appointments, and sends Gmail confirmations. 106 nodes with voice + text support and persistent memory.',
       flow: [
@@ -1211,6 +1266,8 @@ window.addEventListener('scroll',()=>{
       id: 1,
       platform: 'Make.com',
       icon: '💬',
+      industry: 'Customer Support',
+      metrics: [{num:'80%', label:'Queries Automated'}, {num:'24/7', label:'Active Support'}],
       title: 'WhatsApp AI Chatbot — Magicrete',
       desc: 'AI-powered WhatsApp customer support bot for a building materials company. Customers send queries via WhatsApp, GPT-4 retrieves answers from a Make DataStore knowledge base and replies via 360Dialog — fully automated, 24/7 support.',
       flow: [
@@ -1232,6 +1289,8 @@ window.addEventListener('scroll',()=>{
       id: 2,
       platform: 'Make.com',
       icon: '🏢',
+      industry: 'Lead Generation',
+      metrics: [{num:'<8s', label:'End-to-End Latency'}, {num:'Zero', label:'Manual Data Entry'}],
       title: 'Facebook Lead → GHL + Teams + Outlook',
       desc: 'Captures Facebook Lead Ads in real time, creates a contact in GoHighLevel, logs to Airtable, notifies the sales team on Microsoft Teams, and sends a personalised Outlook email — all within seconds of a lead submitting the form.',
       flow: [
@@ -1254,6 +1313,8 @@ window.addEventListener('scroll',()=>{
       id: 3,
       platform: 'Make.com',
       icon: '📄',
+      industry: 'Insurance · Document AI',
+      metrics: [{num:'40s', label:'Per Document'}, {num:'Zero', label:'Manual Entry'}],
       title: 'Insurance Proposal OCR → Google Docs',
       desc: 'Watches a Google Drive folder for new insurance documents, extracts structured data using Gemini Vision + GPT-4 OCR, and auto-generates a formatted Google Docs proposal from a template — removing hours of manual data entry.',
       flow: [
@@ -1276,6 +1337,8 @@ window.addEventListener('scroll',()=>{
       id: 4,
       platform: 'Make.com',
       icon: '📝',
+      industry: 'Content · SEO',
+      metrics: [{num:'30', label:'Posts / Month'}, {num:'Zero', label:'Human Writers'}],
       title: 'AI WordPress Blog Auto Publisher',
       desc: 'Reads blog topics from Google Sheets, generates full SEO-optimised posts with GPT-4, creates AI-generated featured images via ImageKit, and publishes directly to WordPress — a fully automated content pipeline that runs on schedule.',
       flow: [
@@ -1298,6 +1361,8 @@ window.addEventListener('scroll',()=>{
       id: 5,
       platform: 'n8n',
       icon: '📊',
+      industry: 'Finance · Document AI',
+      metrics: [{num:'39', label:'Nodes Built'}, {num:'3', label:'Loan Types Handled'}],
       title: 'AI Loan Document OCR Processor',
       desc: 'Accepts loan documents via a web form, extracts structured data with GPT-4 Vision, validates and routes based on loan type, syncs results to Google Sheets, and sends a structured summary report via Gmail.',
       flow: [
@@ -1319,10 +1384,12 @@ window.addEventListener('scroll',()=>{
     },
   ];
 
-  const backdrop = document.getElementById('auto-modal-backdrop');
+  const backdrop      = document.getElementById('auto-modal-backdrop');
   const modalPlatform = document.getElementById('modal-platform');
+  const modalIndustry = document.getElementById('modal-industry');
   const modalTitle    = document.getElementById('modal-title');
   const modalDesc     = document.getElementById('modal-desc');
+  const modalMetrics  = document.getElementById('modal-metrics');
   const modalFlow     = document.getElementById('modal-flow');
   const modalDetails  = document.getElementById('modal-details');
   const modalTags     = document.getElementById('modal-tags');
@@ -1331,21 +1398,24 @@ window.addEventListener('scroll',()=>{
 
   function openModal(id){
     const p = PROJECTS[id];
-    // Platform badge
     modalPlatform.innerHTML = `<div class="auto-platform ${p.platform==='n8n'?'n8n':'make'}">${p.platform}</div>`;
+    modalIndustry.textContent = p.industry;
     modalTitle.textContent = p.icon + ' ' + p.title;
     modalDesc.textContent  = p.desc;
+    // Metrics
+    modalMetrics.innerHTML = p.metrics.map(m=>
+      `<div class="mm-item"><div class="mm-num">${m.num}</div><div class="mm-label">${m.label}</div></div>`
+    ).join('');
     // Flow
     modalFlow.innerHTML = p.flow.map((s,i)=>
       (i>0?'<div class="af-arrow">→</div>':'') +
       `<div class="af-step">${s.label}<span>${s.sub}</span></div>`
     ).join('');
     modalDetails.textContent = p.details;
-    // Tags
     modalTags.innerHTML = p.tags.map(t=>`<span class="ptag">${t}</span>`).join('');
-    // Screenshot placeholder (swap with <img> later)
     modalShot.innerHTML = '📸 Screenshot coming soon';
-    // Open
+    // scroll panel to top
+    document.getElementById('auto-modal').scrollTop = 0;
     backdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
