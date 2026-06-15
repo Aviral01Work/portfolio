@@ -119,183 +119,66 @@
       justify-content:space-between; gap:64px;
     }
     .hero-content { max-width:620px; }
-    /* ─── 3D AVATAR ─────────────────────────────── */
-    .avatar-scene {
-      flex-shrink: 0;
-      perspective: 900px;
-      width: 280px; height: 340px;
-      position: relative;
+    .hero-photo-wrap {
+      flex-shrink:0;
+      width:260px; height:260px; border-radius:24px;
+      position:relative;
     }
-    .avatar-3d {
-      width: 100%; height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.08s linear;
-    }
-
-    /* orbiting rings */
-    .av-ring {
-      position: absolute;
-      left: 50%; top: 50%;
-      border-radius: 50%;
-      border: 1.5px solid rgba(74,140,247,0.35);
-      pointer-events: none;
-      animation: ring-spin 6s linear infinite;
-    }
-    .av-ring::after {
-      content:'';
-      position:absolute;
-      width:7px; height:7px; border-radius:50%;
-      background: var(--blue);
-      box-shadow: 0 0 8px var(--blue), 0 0 16px var(--blue);
-      top:-4px; left:50%; transform:translateX(-50%);
-    }
-    .av-ring-1 {
-      width:310px; height:310px;
-      margin:-155px 0 0 -155px;
-      transform: rotateX(70deg) rotateZ(0deg);
-      animation-duration: 7s;
-    }
-    .av-ring-2 {
-      width:260px; height:260px;
-      margin:-130px 0 0 -130px;
-      transform: rotateX(70deg) rotateZ(60deg);
-      animation-duration: 5s;
-      animation-direction: reverse;
-      border-color: rgba(232,170,90,0.28);
-    }
-    .av-ring-2::after { background:var(--amber); box-shadow:0 0 8px var(--amber),0 0 16px var(--amber); }
-    .av-ring-3 {
-      width:220px; height:220px;
-      margin:-110px 0 0 -110px;
-      transform: rotateX(70deg) rotateZ(120deg);
-      animation-duration: 9s;
-      border-color: rgba(74,140,247,0.2);
-    }
-    @keyframes ring-spin {
-      from { transform: rotateX(70deg) rotateZ(0deg); }
-      to   { transform: rotateX(70deg) rotateZ(360deg); }
-    }
-    .av-ring-2 { animation-name: ring-spin-2; }
-    @keyframes ring-spin-2 {
-      from { transform: rotateX(70deg) rotateZ(60deg); }
-      to   { transform: rotateX(70deg) rotateZ(-300deg); }
-    }
-    .av-ring-3 { animation-name: ring-spin-3; }
-    @keyframes ring-spin-3 {
-      from { transform: rotateX(70deg) rotateZ(120deg); }
-      to   { transform: rotateX(70deg) rotateZ(480deg); }
-    }
-
-    /* photo frame */
-    .av-frame {
-      position: absolute;
-      inset: 20px;
-      border-radius: 20px;
-      overflow: hidden;
-      z-index: 2;
-    }
-    .av-frame::before {
+    .hero-photo-wrap::before {
       content:''; position:absolute; inset:-2px;
-      border-radius:22px;
-      background:linear-gradient(135deg, var(--blue), transparent 55%, var(--amber));
+      border-radius:26px;
+      background:linear-gradient(135deg, var(--blue), transparent 60%, var(--amber));
       z-index:0;
     }
     .hero-photo {
       width:100%; height:100%; object-fit:cover;
-      border-radius:18px; display:block;
-      position:relative; z-index:1;
+      border-radius:23px; position:relative; z-index:1;
+      display:block;
     }
 
-    /* holographic shimmer overlay */
-    .av-shimmer {
-      position:absolute; inset:0; border-radius:18px;
-      background: linear-gradient(
-        135deg,
-        transparent 20%,
-        rgba(74,140,247,0.07) 40%,
-        rgba(255,255,255,0.09) 50%,
-        rgba(232,170,90,0.06) 60%,
-        transparent 80%
-      );
-      background-size: 200% 200%;
-      animation: holo-shift 4s ease-in-out infinite;
-      pointer-events:none; z-index:3;
-      mix-blend-mode: screen;
+    /* ─── 3D COMPANION ───────────────────────────── */
+    #companion-wrap {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 110px;
+      height: 150px;
+      z-index: 300;
+      pointer-events: none;
     }
-    @keyframes holo-shift {
-      0%   { background-position: 0% 0%; }
-      50%  { background-position: 100% 100%; }
-      100% { background-position: 0% 0%; }
+    #companion-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
-
-    /* scan lines */
-    .av-scan {
-      position:absolute; inset:0; border-radius:18px;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 3px,
-        rgba(74,140,247,0.025) 3px,
-        rgba(74,140,247,0.025) 4px
-      );
-      pointer-events:none; z-index:4;
-      animation: scan-move 8s linear infinite;
+    #companion-bubble {
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      background: rgba(12,15,26,0.92);
+      border: 1px solid var(--border2);
+      border-radius: 12px 12px 2px 12px;
+      padding: 8px 12px;
+      font-size: .72rem;
+      color: var(--text2);
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+      margin-bottom: 4px;
     }
-    @keyframes scan-move {
-      0%   { background-position: 0 0; }
-      100% { background-position: 0 100px; }
+    #companion-bubble.show {
+      opacity: 1;
+      transform: translateY(0);
     }
-
-    /* glow base */
-    .av-glow {
-      position:absolute; inset:-20px;
-      border-radius:50%;
-      background: radial-gradient(ellipse at 50% 60%,
-        rgba(74,140,247,0.18) 0%,
-        rgba(74,140,247,0.06) 50%,
-        transparent 75%
-      );
-      pointer-events:none; z-index:1;
-      animation: glow-pulse 3s ease-in-out infinite;
-    }
-    @keyframes glow-pulse {
-      0%,100% { opacity:0.7; transform:scale(1); }
-      50%      { opacity:1;   transform:scale(1.06); }
-    }
-
-    /* floating dots */
-    .av-dot {
-      position:absolute; border-radius:50%;
-      background:var(--blue);
-      box-shadow:0 0 6px var(--blue);
-      animation: float-dot 4s ease-in-out infinite;
-      z-index:5; pointer-events:none;
-    }
-    .av-dot:nth-child(1){ width:5px;height:5px; top:8%; left:10%; animation-delay:0s; }
-    .av-dot:nth-child(2){ width:4px;height:4px; top:20%; right:8%; animation-delay:.8s; background:var(--amber); box-shadow:0 0 6px var(--amber); }
-    .av-dot:nth-child(3){ width:3px;height:3px; bottom:22%; left:6%; animation-delay:1.5s; }
-    .av-dot:nth-child(4){ width:4px;height:4px; bottom:10%; right:12%; animation-delay:2.2s; background:var(--amber); box-shadow:0 0 6px var(--amber); }
-    @keyframes float-dot {
-      0%,100% { transform:translateY(0); opacity:.8; }
-      50%      { transform:translateY(-10px); opacity:1; }
-    }
-
-    /* status badge under avatar */
-    .av-status {
-      position:absolute; bottom:-14px; left:50%;
-      transform:translateX(-50%);
-      background:rgba(16,185,129,0.1);
-      border:1px solid rgba(16,185,129,0.25);
-      border-radius:100px; padding:5px 14px;
-      display:flex; align-items:center; gap:7px;
-      font-size:.72rem; font-weight:600; color:#6ee7b7;
-      white-space:nowrap; z-index:6; letter-spacing:.4px;
-    }
-    .av-status-dot {
-      width:6px; height:6px; border-radius:50%;
-      background:#10b981; box-shadow:0 0 6px #10b981;
-      animation:blink 2.5s infinite;
+    #companion-bubble::after {
+      content:'';
+      position:absolute; bottom:-6px; right:14px;
+      width:10px; height:6px;
+      background: rgba(12,15,26,0.92);
+      clip-path: polygon(0 0,100% 0,100% 100%);
     }
 
     .avail-badge {
@@ -803,10 +686,7 @@
       #hero, .wrap { padding-left:24px; padding-right:24px; }
       #hero { padding-top:100px; }
       .hero-inner { flex-direction:column-reverse; gap:36px; }
-      .avatar-scene { width:200px; height:240px; }
-      .av-ring-1{ width:220px;height:220px;margin:-110px 0 0 -110px; }
-      .av-ring-2{ width:185px;height:185px;margin:-92px 0 0 -92px; }
-      .av-ring-3{ width:155px;height:155px;margin:-77px 0 0 -77px; }
+      .hero-photo-wrap { width:160px; height:160px; }
       .hero-stats { flex-wrap:wrap; gap:24px; }
       .stat-item { border-right:none; padding-right:0; margin-right:0; }
       .resume-box { flex-direction:column; }
@@ -899,26 +779,8 @@
         </div>
       </div>
     </div>
-    <div class="avatar-scene">
-      <div class="av-glow"></div>
-      <div class="avatar-3d" id="avatar3d">
-        <div class="av-ring av-ring-1"></div>
-        <div class="av-ring av-ring-2"></div>
-        <div class="av-ring av-ring-3"></div>
-        <div class="av-dot"></div>
-        <div class="av-dot"></div>
-        <div class="av-dot"></div>
-        <div class="av-dot"></div>
-        <div class="av-frame">
-          <img src="Gemini_Generated_Image_ui37wiui37wiui37.png" alt="Aviral Dubey" class="hero-photo" />
-          <div class="av-shimmer"></div>
-          <div class="av-scan"></div>
-        </div>
-      </div>
-      <div class="av-status">
-        <span class="av-status-dot"></span>
-        Open to Work
-      </div>
+    <div class="hero-photo-wrap">
+      <img src="Gemini_Generated_Image_ui37wiui37wiui37.png" alt="Aviral Dubey" class="hero-photo" />
     </div>
   </div>
 </section>
@@ -1687,29 +1549,6 @@ window.addEventListener('scroll',()=>{
   });
 })();
 
-// ── 3D AVATAR TILT ────────────────────────────────
-(function(){
-  const avatar = document.getElementById('avatar3d');
-  if(!avatar) return;
-  let tx=0, ty=0, cx=0, cy=0;
-  // smooth interpolation
-  function lerp(a,b,t){ return a+(b-a)*t; }
-  (function tick(){
-    tx = lerp(tx, cx, 0.07);
-    ty = lerp(ty, cy, 0.07);
-    avatar.style.transform = `rotateY(${tx}deg) rotateX(${ty}deg)`;
-    requestAnimationFrame(tick);
-  })();
-  document.addEventListener('mousemove', e=>{
-    const rect = avatar.closest('.avatar-scene').getBoundingClientRect();
-    const mx = rect.left + rect.width/2;
-    const my = rect.top  + rect.height/2;
-    cx = (e.clientX - mx) / window.innerWidth  * 22;
-    cy = (e.clientY - my) / window.innerHeight * -16;
-  });
-  document.addEventListener('mouseleave', ()=>{ cx=0; cy=0; });
-})();
-
 // ── AUTOMATION MODAL ──────────────────────────────
 (function(){
   const PROJECTS = [
@@ -1915,6 +1754,236 @@ window.addEventListener('scroll',()=>{
     el.addEventListener('mouseenter',()=>document.body.classList.add('hovered'));
     el.addEventListener('mouseleave',()=>document.body.classList.remove('hovered'));
   });
+})();
+</script>
+
+<!-- ── 3D COMPANION ── -->
+<div id="companion-wrap">
+  <div id="companion-bubble"></div>
+  <canvas id="companion-canvas"></canvas>
+</div>
+
+<script>
+// ── 3D COMPANION (Three.js low-poly robot) ─────────
+(function(){
+  const canvas = document.getElementById('companion-canvas');
+  const wrap   = document.getElementById('companion-wrap');
+  const bubble = document.getElementById('companion-bubble');
+
+  const W = 110, H = 150;
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(W, H);
+  renderer.shadowMap.enabled = false;
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 100);
+  camera.position.set(0, 0.3, 4.2);
+
+  // lights
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const dirLight = new THREE.DirectionalLight(0x4a8cf7, 1.4);
+  dirLight.position.set(2, 4, 3);
+  scene.add(dirLight);
+  const rimLight = new THREE.DirectionalLight(0xe8aa5a, 0.5);
+  rimLight.position.set(-3, 1, -2);
+  scene.add(rimLight);
+
+  // materials
+  const matBody  = new THREE.MeshStandardMaterial({ color:0x0c1830, metalness:.7, roughness:.3 });
+  const matBlue  = new THREE.MeshStandardMaterial({ color:0x4a8cf7, metalness:.5, roughness:.4,
+                      emissive:0x1a3a8a, emissiveIntensity:.4 });
+  const matAmber = new THREE.MeshStandardMaterial({ color:0xe8aa5a, metalness:.4, roughness:.4,
+                      emissive:0x7a4a10, emissiveIntensity:.3 });
+  const matDark  = new THREE.MeshStandardMaterial({ color:0x050810, metalness:.8, roughness:.2 });
+  const matGlass = new THREE.MeshStandardMaterial({ color:0x4a8cf7, transparent:true, opacity:.55,
+                      metalness:.2, roughness:.1, emissive:0x2255cc, emissiveIntensity:.6 });
+
+  const robot = new THREE.Group();
+
+  // ── BODY ──
+  const body = new THREE.Mesh(new THREE.BoxGeometry(.72,.78,.44), matBody);
+  body.position.y = 0;
+  robot.add(body);
+
+  // body stripe (blue accent)
+  const stripe = new THREE.Mesh(new THREE.BoxGeometry(.72,.06,.46), matBlue);
+  stripe.position.y = 0.1;
+  robot.add(stripe);
+
+  // chest panel
+  const chest = new THREE.Mesh(new THREE.BoxGeometry(.36,.3,.46), matDark);
+  chest.position.y = 0.04;
+  robot.add(chest);
+
+  // chest glow dot
+  const chestDot = new THREE.Mesh(new THREE.SphereGeometry(.065,8,8), matAmber);
+  chestDot.position.set(0, 0.08, .24);
+  robot.add(chestDot);
+
+  // ── HEAD ──
+  const headGroup = new THREE.Group();
+  headGroup.position.y = .74;
+  robot.add(headGroup);
+
+  const head = new THREE.Mesh(new THREE.BoxGeometry(.6,.5,.48), matBody);
+  headGroup.add(head);
+
+  // visor
+  const visor = new THREE.Mesh(new THREE.BoxGeometry(.46,.18,.5), matGlass);
+  visor.position.set(0, .06, 0);
+  headGroup.add(visor);
+
+  // eyes (2 small glowing boxes inside visor)
+  const eyeL = new THREE.Mesh(new THREE.BoxGeometry(.1,.09,.02), matBlue);
+  eyeL.position.set(-.13, .06, .26);
+  headGroup.add(eyeL);
+  const eyeR = eyeL.clone();
+  eyeR.position.x = .13;
+  headGroup.add(eyeR);
+
+  // ear fins
+  const earL = new THREE.Mesh(new THREE.BoxGeometry(.06,.22,.38), matBlue);
+  earL.position.set(-.35, .04, 0);
+  headGroup.add(earL);
+  const earR = earL.clone();
+  earR.position.x = .35;
+  headGroup.add(earR);
+
+  // antenna
+  const antBase = new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.18,8), matBody);
+  antBase.position.set(.12, .38, 0);
+  headGroup.add(antBase);
+  const antTip = new THREE.Mesh(new THREE.SphereGeometry(.05,8,8), matAmber);
+  antTip.position.set(.12, .5, 0);
+  headGroup.add(antTip);
+
+  // ── ARMS ──
+  function makeArm(side){
+    const g = new THREE.Group();
+    const upper = new THREE.Mesh(new THREE.BoxGeometry(.18,.38,.18), matBody);
+    upper.position.y = -.19;
+    g.add(upper);
+    const elbow = new THREE.Mesh(new THREE.BoxGeometry(.2,.12,.2), matBlue);
+    elbow.position.y = -.42;
+    g.add(elbow);
+    const lower = new THREE.Mesh(new THREE.BoxGeometry(.16,.3,.16), matBody);
+    lower.position.y = -.62;
+    g.add(lower);
+    const hand = new THREE.Mesh(new THREE.BoxGeometry(.2,.16,.2), matDark);
+    hand.position.y = -.82;
+    g.add(hand);
+    g.position.set(side*.52, .28, 0);
+    return g;
+  }
+  const armL = makeArm(-1);
+  const armR = makeArm( 1);
+  robot.add(armL, armR);
+
+  // ── LEGS ──
+  function makeLeg(side){
+    const g = new THREE.Group();
+    const upper = new THREE.Mesh(new THREE.BoxGeometry(.22,.36,.22), matBody);
+    upper.position.y = -.18;
+    g.add(upper);
+    const knee = new THREE.Mesh(new THREE.BoxGeometry(.24,.1,.24), matBlue);
+    knee.position.y = -.38;
+    g.add(knee);
+    const lower = new THREE.Mesh(new THREE.BoxGeometry(.2,.3,.2), matBody);
+    lower.position.y = -.58;
+    g.add(lower);
+    const foot = new THREE.Mesh(new THREE.BoxGeometry(.26,.1,.3), matDark);
+    foot.position.set(0, -.74, .04);
+    g.add(foot);
+    g.position.set(side*.2, -.46, 0);
+    return g;
+  }
+  const legL = makeLeg(-1);
+  const legR = makeLeg( 1);
+  robot.add(legL, legR);
+
+  // ground glow plane
+  const glowGeo  = new THREE.PlaneGeometry(1.4, .4);
+  const glowMat  = new THREE.MeshBasicMaterial({
+    color:0x4a8cf7, transparent:true, opacity:.12, side:THREE.DoubleSide
+  });
+  const glow = new THREE.Mesh(glowGeo, glowMat);
+  glow.rotation.x = -Math.PI/2;
+  glow.position.y = -1.3;
+  robot.add(glow);
+
+  robot.position.y = -.3;
+  scene.add(robot);
+
+  // mouse tracking
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', e=>{
+    mouseX = (e.clientX/window.innerWidth  - .5) * 2;
+    mouseY = (e.clientY/window.innerHeight - .5) * 2;
+  });
+
+  // bubble messages
+  const msgs = [
+    "Let's build something! 🚀",
+    "Automating the boring stuff ⚡",
+    "n8n + Make = ❤️",
+    "AI is the future 🤖",
+    "Open to work! 👋",
+    "Voice AI is wild 🎙️",
+  ];
+  let bubbleTimer;
+  function showBubble(){
+    bubble.textContent = msgs[Math.floor(Math.random()*msgs.length)];
+    bubble.classList.add('show');
+    clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(()=>bubble.classList.remove('show'), 3000);
+  }
+  // show bubble every ~12s, first after 3s
+  setTimeout(showBubble, 3000);
+  setInterval(showBubble, 12000);
+  wrap.style.pointerEvents = 'auto';
+  canvas.addEventListener('click', showBubble);
+  canvas.style.cursor = 'pointer';
+
+  // animation
+  let t = 0;
+  function animate(){
+    requestAnimationFrame(animate);
+    t += .016;
+
+    // idle bob
+    robot.position.y = -.3 + Math.sin(t*1.6)*.045;
+    // slight sway
+    robot.rotation.z = Math.sin(t*.8)*.018;
+
+    // head tracks mouse (subtle)
+    headGroup.rotation.y = mouseX * .22;
+    headGroup.rotation.x = mouseY * -.12;
+
+    // arm swing idle
+    armL.rotation.x = Math.sin(t*1.6)*.12;
+    armR.rotation.x = Math.sin(t*1.6+Math.PI)*.12;
+
+    // leg idle
+    legL.rotation.x = Math.sin(t*1.6+Math.PI)*.06;
+    legR.rotation.x = Math.sin(t*1.6)*.06;
+
+    // antenna tip pulse (scale)
+    const pulse = 1 + Math.sin(t*3)*.15;
+    antTip.scale.setScalar(pulse);
+
+    // eye blink every ~4s
+    const blinkPhase = (t % 4);
+    const eyeScale = blinkPhase > 3.85 ? Math.max(0.05, 1-(blinkPhase-3.85)*40) : 1;
+    eyeL.scale.y = eyeScale;
+    eyeR.scale.y = eyeScale;
+
+    // body subtle rotation toward mouse
+    robot.rotation.y = mouseX * .18;
+
+    renderer.render(scene, camera);
+  }
+  animate();
 })();
 </script>
 </body>
