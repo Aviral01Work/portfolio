@@ -47,7 +47,7 @@
 
     /* ─── CURSOR ─────────────────────────────── */
     #cur {
-      position: fixed; top:0; left:0; z-index:9999;
+      position: fixed; top:0; left:0; z-index:10002;
       pointer-events: none;
       mix-blend-mode: normal;
     }
@@ -357,9 +357,9 @@
     /* ─── AUTO-CARD MODAL (right panel) ──────── */
     #auto-modal-backdrop {
       position:fixed; inset:0; z-index:10000;
-      background:rgba(7,9,15,0.75); backdrop-filter:blur(6px);
+      background:rgba(7,9,15,0.45); backdrop-filter:blur(10px) saturate(0.8);
       opacity:0; pointer-events:none;
-      transition:opacity .25s ease;
+      transition:opacity .3s ease;
     }
     #auto-modal-backdrop.open { opacity:1; pointer-events:all; }
     #auto-modal {
