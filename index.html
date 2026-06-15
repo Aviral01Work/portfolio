@@ -119,21 +119,183 @@
       justify-content:space-between; gap:64px;
     }
     .hero-content { max-width:620px; }
-    .hero-photo-wrap {
-      flex-shrink:0;
-      width:260px; height:260px; border-radius:24px;
-      position:relative;
+    /* ─── 3D AVATAR ─────────────────────────────── */
+    .avatar-scene {
+      flex-shrink: 0;
+      perspective: 900px;
+      width: 280px; height: 340px;
+      position: relative;
     }
-    .hero-photo-wrap::before {
+    .avatar-3d {
+      width: 100%; height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.08s linear;
+    }
+
+    /* orbiting rings */
+    .av-ring {
+      position: absolute;
+      left: 50%; top: 50%;
+      border-radius: 50%;
+      border: 1.5px solid rgba(74,140,247,0.35);
+      pointer-events: none;
+      animation: ring-spin 6s linear infinite;
+    }
+    .av-ring::after {
+      content:'';
+      position:absolute;
+      width:7px; height:7px; border-radius:50%;
+      background: var(--blue);
+      box-shadow: 0 0 8px var(--blue), 0 0 16px var(--blue);
+      top:-4px; left:50%; transform:translateX(-50%);
+    }
+    .av-ring-1 {
+      width:310px; height:310px;
+      margin:-155px 0 0 -155px;
+      transform: rotateX(70deg) rotateZ(0deg);
+      animation-duration: 7s;
+    }
+    .av-ring-2 {
+      width:260px; height:260px;
+      margin:-130px 0 0 -130px;
+      transform: rotateX(70deg) rotateZ(60deg);
+      animation-duration: 5s;
+      animation-direction: reverse;
+      border-color: rgba(232,170,90,0.28);
+    }
+    .av-ring-2::after { background:var(--amber); box-shadow:0 0 8px var(--amber),0 0 16px var(--amber); }
+    .av-ring-3 {
+      width:220px; height:220px;
+      margin:-110px 0 0 -110px;
+      transform: rotateX(70deg) rotateZ(120deg);
+      animation-duration: 9s;
+      border-color: rgba(74,140,247,0.2);
+    }
+    @keyframes ring-spin {
+      from { transform: rotateX(70deg) rotateZ(0deg); }
+      to   { transform: rotateX(70deg) rotateZ(360deg); }
+    }
+    .av-ring-2 { animation-name: ring-spin-2; }
+    @keyframes ring-spin-2 {
+      from { transform: rotateX(70deg) rotateZ(60deg); }
+      to   { transform: rotateX(70deg) rotateZ(-300deg); }
+    }
+    .av-ring-3 { animation-name: ring-spin-3; }
+    @keyframes ring-spin-3 {
+      from { transform: rotateX(70deg) rotateZ(120deg); }
+      to   { transform: rotateX(70deg) rotateZ(480deg); }
+    }
+
+    /* photo frame */
+    .av-frame {
+      position: absolute;
+      inset: 20px;
+      border-radius: 20px;
+      overflow: hidden;
+      z-index: 2;
+    }
+    .av-frame::before {
       content:''; position:absolute; inset:-2px;
-      border-radius:26px;
-      background:linear-gradient(135deg, var(--blue), transparent 60%, var(--amber));
+      border-radius:22px;
+      background:linear-gradient(135deg, var(--blue), transparent 55%, var(--amber));
       z-index:0;
     }
     .hero-photo {
       width:100%; height:100%; object-fit:cover;
-      border-radius:23px; position:relative; z-index:1;
-      display:block;
+      border-radius:18px; display:block;
+      position:relative; z-index:1;
+    }
+
+    /* holographic shimmer overlay */
+    .av-shimmer {
+      position:absolute; inset:0; border-radius:18px;
+      background: linear-gradient(
+        135deg,
+        transparent 20%,
+        rgba(74,140,247,0.07) 40%,
+        rgba(255,255,255,0.09) 50%,
+        rgba(232,170,90,0.06) 60%,
+        transparent 80%
+      );
+      background-size: 200% 200%;
+      animation: holo-shift 4s ease-in-out infinite;
+      pointer-events:none; z-index:3;
+      mix-blend-mode: screen;
+    }
+    @keyframes holo-shift {
+      0%   { background-position: 0% 0%; }
+      50%  { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+
+    /* scan lines */
+    .av-scan {
+      position:absolute; inset:0; border-radius:18px;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(74,140,247,0.025) 3px,
+        rgba(74,140,247,0.025) 4px
+      );
+      pointer-events:none; z-index:4;
+      animation: scan-move 8s linear infinite;
+    }
+    @keyframes scan-move {
+      0%   { background-position: 0 0; }
+      100% { background-position: 0 100px; }
+    }
+
+    /* glow base */
+    .av-glow {
+      position:absolute; inset:-20px;
+      border-radius:50%;
+      background: radial-gradient(ellipse at 50% 60%,
+        rgba(74,140,247,0.18) 0%,
+        rgba(74,140,247,0.06) 50%,
+        transparent 75%
+      );
+      pointer-events:none; z-index:1;
+      animation: glow-pulse 3s ease-in-out infinite;
+    }
+    @keyframes glow-pulse {
+      0%,100% { opacity:0.7; transform:scale(1); }
+      50%      { opacity:1;   transform:scale(1.06); }
+    }
+
+    /* floating dots */
+    .av-dot {
+      position:absolute; border-radius:50%;
+      background:var(--blue);
+      box-shadow:0 0 6px var(--blue);
+      animation: float-dot 4s ease-in-out infinite;
+      z-index:5; pointer-events:none;
+    }
+    .av-dot:nth-child(1){ width:5px;height:5px; top:8%; left:10%; animation-delay:0s; }
+    .av-dot:nth-child(2){ width:4px;height:4px; top:20%; right:8%; animation-delay:.8s; background:var(--amber); box-shadow:0 0 6px var(--amber); }
+    .av-dot:nth-child(3){ width:3px;height:3px; bottom:22%; left:6%; animation-delay:1.5s; }
+    .av-dot:nth-child(4){ width:4px;height:4px; bottom:10%; right:12%; animation-delay:2.2s; background:var(--amber); box-shadow:0 0 6px var(--amber); }
+    @keyframes float-dot {
+      0%,100% { transform:translateY(0); opacity:.8; }
+      50%      { transform:translateY(-10px); opacity:1; }
+    }
+
+    /* status badge under avatar */
+    .av-status {
+      position:absolute; bottom:-14px; left:50%;
+      transform:translateX(-50%);
+      background:rgba(16,185,129,0.1);
+      border:1px solid rgba(16,185,129,0.25);
+      border-radius:100px; padding:5px 14px;
+      display:flex; align-items:center; gap:7px;
+      font-size:.72rem; font-weight:600; color:#6ee7b7;
+      white-space:nowrap; z-index:6; letter-spacing:.4px;
+    }
+    .av-status-dot {
+      width:6px; height:6px; border-radius:50%;
+      background:#10b981; box-shadow:0 0 6px #10b981;
+      animation:blink 2.5s infinite;
     }
 
     .avail-badge {
@@ -641,7 +803,10 @@
       #hero, .wrap { padding-left:24px; padding-right:24px; }
       #hero { padding-top:100px; }
       .hero-inner { flex-direction:column-reverse; gap:36px; }
-      .hero-photo-wrap { width:160px; height:160px; }
+      .avatar-scene { width:200px; height:240px; }
+      .av-ring-1{ width:220px;height:220px;margin:-110px 0 0 -110px; }
+      .av-ring-2{ width:185px;height:185px;margin:-92px 0 0 -92px; }
+      .av-ring-3{ width:155px;height:155px;margin:-77px 0 0 -77px; }
       .hero-stats { flex-wrap:wrap; gap:24px; }
       .stat-item { border-right:none; padding-right:0; margin-right:0; }
       .resume-box { flex-direction:column; }
@@ -734,8 +899,26 @@
         </div>
       </div>
     </div>
-    <div class="hero-photo-wrap">
-      <img src="Gemini_Generated_Image_ui37wiui37wiui37.png" alt="Aviral Dubey" class="hero-photo" />
+    <div class="avatar-scene">
+      <div class="av-glow"></div>
+      <div class="avatar-3d" id="avatar3d">
+        <div class="av-ring av-ring-1"></div>
+        <div class="av-ring av-ring-2"></div>
+        <div class="av-ring av-ring-3"></div>
+        <div class="av-dot"></div>
+        <div class="av-dot"></div>
+        <div class="av-dot"></div>
+        <div class="av-dot"></div>
+        <div class="av-frame">
+          <img src="Gemini_Generated_Image_ui37wiui37wiui37.png" alt="Aviral Dubey" class="hero-photo" />
+          <div class="av-shimmer"></div>
+          <div class="av-scan"></div>
+        </div>
+      </div>
+      <div class="av-status">
+        <span class="av-status-dot"></span>
+        Open to Work
+      </div>
     </div>
   </div>
 </section>
@@ -1502,6 +1685,29 @@ window.addEventListener('scroll',()=>{
       btn.style.transform = 'translate(0,0)';
     });
   });
+})();
+
+// ── 3D AVATAR TILT ────────────────────────────────
+(function(){
+  const avatar = document.getElementById('avatar3d');
+  if(!avatar) return;
+  let tx=0, ty=0, cx=0, cy=0;
+  // smooth interpolation
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  (function tick(){
+    tx = lerp(tx, cx, 0.07);
+    ty = lerp(ty, cy, 0.07);
+    avatar.style.transform = `rotateY(${tx}deg) rotateX(${ty}deg)`;
+    requestAnimationFrame(tick);
+  })();
+  document.addEventListener('mousemove', e=>{
+    const rect = avatar.closest('.avatar-scene').getBoundingClientRect();
+    const mx = rect.left + rect.width/2;
+    const my = rect.top  + rect.height/2;
+    cx = (e.clientX - mx) / window.innerWidth  * 22;
+    cy = (e.clientY - my) / window.innerHeight * -16;
+  });
+  document.addEventListener('mouseleave', ()=>{ cx=0; cy=0; });
 })();
 
 // ── AUTOMATION MODAL ──────────────────────────────
