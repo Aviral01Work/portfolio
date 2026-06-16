@@ -136,57 +136,34 @@
       display:block;
     }
 
-    /* ─── 3D COMPANION ───────────────────────────── */
+    /* ─── 3D COMPANION (roaming astronaut dog) ───── */
     #companion-wrap {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 160px;
+      top: 0; left: 0;
+      width: 120px;
+      height: 120px;
       z-index: 300;
       pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
+      will-change: transform;
     }
     #companion-canvas {
-      width: 160px;
-      height: 190px;
+      width: 120px;
+      height: 120px;
       display: block;
-    }
-    .companion-label {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1px;
-      margin-top: -6px;
-    }
-    .companion-name {
-      font-family: var(--font2);
-      font-size: .78rem;
-      font-weight: 700;
-      color: var(--blue);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-    .companion-role {
-      font-size: .62rem;
-      color: var(--text3);
-      letter-spacing: 1px;
     }
     #companion-bubble {
       position: absolute;
-      bottom: calc(100% + 8px);
-      right: 0;
+      bottom: 78%;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px) scale(0.9);
       background: rgba(7,9,15,0.95);
       border: 1px solid rgba(74,140,247,0.3);
-      border-radius: 12px 12px 2px 12px;
-      padding: 9px 14px;
-      font-size: .73rem;
+      border-radius: 12px 12px 12px 2px;
+      padding: 7px 12px;
+      font-size: .68rem;
       color: var(--text);
       white-space: nowrap;
       opacity: 0;
-      transform: translateY(8px) scale(0.95);
       transition: opacity .35s cubic-bezier(.23,1,.32,1),
                   transform .35s cubic-bezier(.23,1,.32,1);
       pointer-events: none;
@@ -195,14 +172,11 @@
     }
     #companion-bubble.show {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateX(-50%) translateY(0) scale(1);
     }
-    #companion-bubble::after {
-      content:'';
-      position: absolute; bottom: -6px; right: 16px;
-      border-left: 6px solid transparent;
-      border-right: 0px solid transparent;
-      border-top: 6px solid rgba(74,140,247,0.3);
+    @media (max-width: 640px) {
+      #companion-wrap, #companion-canvas { width:64px; height:64px; }
+      #companion-bubble { font-size:.6rem; padding:5px 9px; }
     }
 
     .avail-badge {
@@ -1784,197 +1758,174 @@ window.addEventListener('scroll',()=>{
 <!-- ── 3D COMPANION ── -->
 <div id="companion-wrap">
   <div id="companion-bubble"></div>
-  <canvas id="companion-canvas" width="160" height="190"></canvas>
-  <div class="companion-label">
-    <span class="companion-name">ARIA</span>
-    <span class="companion-role">AI Companion</span>
-  </div>
+  <canvas id="companion-canvas" width="200" height="200"></canvas>
 </div>
 
 <script>
-// ── ARIA — AI ORB COMPANION ────────────────────────
+// ── ASTRONAUT DOG — ROAMING COMPANION ──────────────
 (function(){
   const canvas = document.getElementById('companion-canvas');
   const wrap   = document.getElementById('companion-wrap');
   const bubble = document.getElementById('companion-bubble');
   if(!canvas) return;
 
-  const W = 160, H = 190;
+  const W = 200, H = 200;
   const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(W, H);
 
   const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(48, W/H, 0.1, 50);
-  camera.position.z = 2.9;
+  const camera = new THREE.PerspectiveCamera(40, W/H, 0.1, 50);
+  camera.position.set(0, .15, 4.1);
 
   // ── LIGHTS ──
-  scene.add(new THREE.AmbientLight(0x112244, 1.2));
-  const pL1 = new THREE.PointLight(0x4a8cf7, 3.5, 8);
-  pL1.position.set(1.5, 2, 2);
+  scene.add(new THREE.AmbientLight(0x9fb8ff, 1.1));
+  const pL1 = new THREE.PointLight(0x4a8cf7, 2.2, 10);
+  pL1.position.set(2, 3, 3);
   scene.add(pL1);
-  const pL2 = new THREE.PointLight(0xe8aa5a, 1.2, 6);
-  pL2.position.set(-2, -1, 1);
+  const pL2 = new THREE.DirectionalLight(0xffffff, .9);
+  pL2.position.set(-2, 2, 2);
   scene.add(pL2);
-  const pL3 = new THREE.PointLight(0xffffff, 0.6, 5);
-  pL3.position.set(0, 0, 3);
-  scene.add(pL3);
 
   function lerp(a,b,t){ return a+(b-a)*t; }
 
-  // ── ARIA GROUP ──
-  const aria = new THREE.Group();
-  scene.add(aria);
+  // ── DOG GROUP ──
+  const dog = new THREE.Group();
+  scene.add(dog);
+  const body = new THREE.Group();
+  dog.add(body);
 
-  // 1. outer atmosphere glow
-  const atmosMat = new THREE.MeshBasicMaterial({
-    color:0x4a8cf7, transparent:true, opacity:.055,
-    side:THREE.BackSide, blending:THREE.AdditiveBlending, depthWrite:false
-  });
-  aria.add(new THREE.Mesh(new THREE.SphereGeometry(1.15,16,16), atmosMat));
+  const furMat = new THREE.MeshStandardMaterial({ color:0xd99355, roughness:.85, metalness:.05 });
+  const furDarkMat = new THREE.MeshStandardMaterial({ color:0xb5713a, roughness:.85, metalness:.05 });
+  const suitMat = new THREE.MeshStandardMaterial({ color:0xf0f2f6, roughness:.55, metalness:.15 });
+  const visorMat = new THREE.MeshStandardMaterial({ color:0x0c2240, roughness:.15, metalness:.6, emissive:0x1a3d6b, emissiveIntensity:.6 });
+  const accentMat = new THREE.MeshStandardMaterial({ color:0x4a8cf7, roughness:.4, metalness:.4, emissive:0x1d4fa0, emissiveIntensity:.5 });
+  const darkMat = new THREE.MeshStandardMaterial({ color:0x222831, roughness:.6, metalness:.3 });
 
-  // 2. main core
-  const coreMat = new THREE.MeshStandardMaterial({
-    color:0x061428, emissive:0x2255cc,
-    emissiveIntensity:1.4, metalness:.95, roughness:.1
-  });
-  const core = new THREE.Mesh(new THREE.SphereGeometry(.42,48,48), coreMat);
-  aria.add(core);
+  // torso (space-suit body)
+  const torso = new THREE.Mesh(new THREE.CylinderGeometry(.5,.58,.95,16), suitMat);
+  torso.position.y = -.1;
+  body.add(torso);
 
-  // 3. inner bright kernel (additive glow)
-  const kernelMat = new THREE.MeshBasicMaterial({
-    color:0x88c8ff, blending:THREE.AdditiveBlending, depthWrite:false
-  });
-  const kernel = new THREE.Mesh(new THREE.SphereGeometry(.18,16,16), kernelMat);
-  aria.add(kernel);
+  // chest accent panel
+  const panel = new THREE.Mesh(new THREE.BoxGeometry(.34,.28,.06), accentMat);
+  panel.position.set(0,.02,.52);
+  body.add(panel);
 
-  // 4. eyes group (tracks mouse)
-  const eyeGroup = new THREE.Group();
-  eyeGroup.position.z = .0;
-  aria.add(eyeGroup);
+  // backpack
+  const pack = new THREE.Mesh(new THREE.BoxGeometry(.42,.6,.3), darkMat);
+  pack.position.set(0,-.05,-.5);
+  body.add(pack);
 
-  const eyeMat = new THREE.MeshBasicMaterial({
-    color:0xffffff, blending:THREE.AdditiveBlending, depthWrite:false
-  });
-  const eyeGeoS = new THREE.SphereGeometry(.055, 12, 12);
-  const eyeL = new THREE.Mesh(eyeGeoS, eyeMat); eyeL.position.set(-.14,.07,.38);
-  const eyeR = new THREE.Mesh(eyeGeoS, eyeMat); eyeR.position.set( .14,.07,.38);
-  const eyeGlowMat = new THREE.MeshBasicMaterial({
-    color:0x4a8cf7, transparent:true, opacity:.5,
-    blending:THREE.AdditiveBlending, depthWrite:false
-  });
-  const eyeGlowGeo = new THREE.SphereGeometry(.095,12,12);
-  const egL = new THREE.Mesh(eyeGlowGeo, eyeGlowMat); egL.position.copy(eyeL.position);
-  const egR = new THREE.Mesh(eyeGlowGeo, eyeGlowMat); egR.position.copy(eyeR.position);
-  eyeGroup.add(eyeL, eyeR, egL, egR);
+  // head group (dog head inside helmet)
+  const headGrp = new THREE.Group();
+  headGrp.position.set(0,.62,.05);
+  body.add(headGrp);
 
-  // mouth (thin arc — just 2 small spheres)
-  const mouthMat = new THREE.MeshBasicMaterial({
-    color:0x4a8cf7, transparent:true, opacity:.6,
-    blending:THREE.AdditiveBlending, depthWrite:false
-  });
-  const mGeo = new THREE.SphereGeometry(.025,8,8);
-  [-0.09,0,0.09].forEach((x,i)=>{
-    const m = new THREE.Mesh(mGeo, mouthMat);
-    m.position.set(x, -.1-.01*Math.abs(i-1), .41);
-    eyeGroup.add(m);
-  });
+  const headFur = new THREE.Mesh(new THREE.SphereGeometry(.42,20,20), furMat);
+  headFur.scale.set(1,.92,1);
+  headGrp.add(headFur);
 
-  // 5. wireframe icosahedron shell
-  const icoGeo   = new THREE.IcosahedronGeometry(.78, 1);
-  const icoEdges = new THREE.EdgesGeometry(icoGeo);
-  const ico = new THREE.LineSegments(icoEdges, new THREE.LineBasicMaterial({
-    color:0x4a8cf7, transparent:true, opacity:.15,
-    blending:THREE.AdditiveBlending, depthWrite:false
-  }));
-  aria.add(ico);
+  // snout
+  const snout = new THREE.Mesh(new THREE.CylinderGeometry(.16,.2,.34,14), furMat);
+  snout.rotation.x = Math.PI/2;
+  snout.position.set(0,-.07,.36);
+  headGrp.add(snout);
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(.07,10,10), darkMat);
+  nose.position.set(0,-.07,.54);
+  headGrp.add(nose);
 
-  // 6. energy rings
-  function ring(iR, oR, color, opacity){
-    const m = new THREE.Mesh(
-      new THREE.RingGeometry(iR, oR, 80),
-      new THREE.MeshBasicMaterial({ color, side:THREE.DoubleSide,
-        transparent:true, opacity, blending:THREE.AdditiveBlending, depthWrite:false })
-    );
-    return m;
+  // ears (floppy, slightly back)
+  function ear(x){
+    const e = new THREE.Mesh(new THREE.ConeGeometry(.16,.42,8), furDarkMat);
+    e.position.set(x,.32,-.08);
+    e.rotation.z = x<0? .55 : -.55;
+    e.rotation.x = .35;
+    return e;
   }
-  const r1 = ring(.62,.68, 0x4a8cf7, .75);  r1.rotation.x = Math.PI/2;
-  const r2 = ring(.76,.80, 0xe8aa5a, .45);  r2.rotation.set(1.1,.4,.3);
-  const r3 = ring(.88,.91, 0x4a8cf7, .28);  r3.rotation.set(-.7,.9,-.5);
-  // thin bright equator accent
-  const r4 = ring(.61,.635,0xaad4ff,.9);   r4.rotation.x = Math.PI/2;
-  aria.add(r1,r2,r3,r4);
+  headGrp.add(ear(-.34), ear(.34));
 
-  // 7. particle cloud
-  const PC = 140;
-  const pPos  = new Float32Array(PC*3);
-  const pData = [];
-  for(let i=0;i<PC;i++){
-    const phi   = Math.acos(2*Math.random()-1);
-    const theta = Math.random()*Math.PI*2;
-    const r     = .92+Math.random()*.52;
-    const spd   = (.4+Math.random()*.9)*(Math.random()>.5?1:-1);
-    const incl  = (Math.random()-.5)*Math.PI*.8;
-    pData.push({phi,theta,r,spd,incl});
-    pPos[i*3]  =r*Math.sin(phi)*Math.cos(theta);
-    pPos[i*3+1]=r*Math.cos(phi);
-    pPos[i*3+2]=r*Math.sin(phi)*Math.sin(theta);
+  // eyes
+  const eyeGeo = new THREE.SphereGeometry(.05,10,10);
+  const eyeMat = new THREE.MeshBasicMaterial({ color:0x16110a });
+  const eyeL = new THREE.Mesh(eyeGeo, eyeMat); eyeL.position.set(-.15,.04,.36);
+  const eyeR = new THREE.Mesh(eyeGeo, eyeMat); eyeR.position.set( .15,.04,.36);
+  headGrp.add(eyeL, eyeR);
+
+  // helmet (glass dome) + ring seal
+  const helmet = new THREE.Mesh(
+    new THREE.SphereGeometry(.56,20,20,0,Math.PI*2,0,Math.PI*0.92),
+    new THREE.MeshStandardMaterial({ color:0xbfe0ff, transparent:true, opacity:.28, roughness:.05, metalness:.1, side:THREE.DoubleSide })
+  );
+  helmet.position.y = .02;
+  headGrp.add(helmet);
+  const visor = new THREE.Mesh(new THREE.SphereGeometry(.46,16,16,Math.PI*.15,Math.PI*.7,Math.PI*.25,Math.PI*.5), visorMat);
+  visor.position.set(0,-.02,.06);
+  headGrp.add(visor);
+  const seal = new THREE.Mesh(new THREE.TorusGeometry(.46,.05,8,24), accentMat);
+  seal.rotation.x = Math.PI/2;
+  seal.position.y = -.18;
+  headGrp.add(seal);
+
+  // antenna
+  const ant = new THREE.Mesh(new THREE.CylinderGeometry(.015,.015,.22,6), darkMat);
+  ant.position.set(.3,.62,-.05);
+  headGrp.add(ant);
+  const antTip = new THREE.Mesh(new THREE.SphereGeometry(.045,8,8), accentMat);
+  antTip.position.set(.3,.74,-.05);
+  headGrp.add(antTip);
+
+  // legs
+  function leg(x){
+    const g = new THREE.Group();
+    const upper = new THREE.Mesh(new THREE.CylinderGeometry(.13,.12,.42,10), suitMat);
+    upper.position.y = -.21;
+    g.add(upper);
+    const boot = new THREE.Mesh(new THREE.BoxGeometry(.22,.14,.3), darkMat);
+    boot.position.set(0,-.46,.05);
+    g.add(boot);
+    g.position.set(x,-.55,0);
+    return g;
   }
-  const pGeo = new THREE.BufferGeometry();
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
-  const ptsMat = new THREE.PointsMaterial({
-    color:0xc0d8ff, size:.028, transparent:true, opacity:.9,
-    blending:THREE.AdditiveBlending, depthWrite:false
-  });
-  const pts = new THREE.Points(pGeo, ptsMat);
-  aria.add(pts);
+  const legFL = leg(-.26), legFR = leg(.26);
+  body.add(legFL, legFR);
 
-  // 8. neural lines (updated every 12 frames)
-  const NL = 18;
-  const nlPos = new Float32Array(NL*2*3);
-  const nlGeo = new THREE.BufferGeometry();
-  nlGeo.setAttribute('position', new THREE.BufferAttribute(nlPos,3));
-  const nlMesh = new THREE.LineSegments(nlGeo, new THREE.LineBasicMaterial({
-    color:0x3a7aee, transparent:true, opacity:.22,
-    blending:THREE.AdditiveBlending, depthWrite:false
-  }));
-  aria.add(nlMesh);
+  // tail
+  const tail = new THREE.Mesh(new THREE.CylinderGeometry(.05,.1,.55,8), furDarkMat);
+  tail.position.set(0,-.05,-.62);
+  tail.rotation.x = -.9;
+  body.add(tail);
 
-  // ground reflection disc
-  const gReflMat = new THREE.MeshBasicMaterial({
-    color:0x4a8cf7, transparent:true, opacity:.08,
-    side:THREE.DoubleSide, blending:THREE.AdditiveBlending, depthWrite:false
-  });
-  const gRefl = new THREE.Mesh(new THREE.CircleGeometry(.65,40), gReflMat);
-  gRefl.rotation.x = -Math.PI/2;
-  gRefl.position.y = -1.05;
-  aria.add(gRefl);
+  // soft drop shadow
+  const shadow = new THREE.Mesh(
+    new THREE.CircleGeometry(.62,28),
+    new THREE.MeshBasicMaterial({ color:0x000000, transparent:true, opacity:.25, depthWrite:false })
+  );
+  shadow.rotation.x = -Math.PI/2;
+  shadow.position.y = -1.18;
+  dog.add(shadow);
+
+  body.scale.setScalar(.9);
+  body.position.y = .15;
 
   // ── STATE ──
-  let mouseX=0,mouseY=0,isHover=false,burstT=0,frame=0;
-  let sRotY=0,sRotX=0;
-  let lastBubbleIdx = -1;
-
+  let isHover=false, burstT=0;
+  let lastBubbleIdx=-1;
   wrap.style.pointerEvents='auto';
   canvas.style.cursor='pointer';
-
-  document.addEventListener('mousemove',e=>{
-    mouseX=(e.clientX/window.innerWidth-.5)*2;
-    mouseY=(e.clientY/window.innerHeight-.5)*2;
-  });
   wrap.addEventListener('mouseenter',()=>isHover=true);
   wrap.addEventListener('mouseleave',()=>isHover=false);
 
   // ── SPEECH BUBBLE ──
   const msgs=[
+    '🐾 Sniffing out good code',
+    '🚀 Orbiting your résumé',
     '⚡ Let\'s automate something',
-    '🤖 AI runs on vibes (and n8n)',
-    '🚀 Click me for good luck',
-    '🎙️ Voice AI is my jam',
-    '💡 Big ideas. Zero manual work',
+    '🛰️ Houston, we have a portfolio',
+    '🦴 Fetching new ideas',
     '👋 Hire Aviral. Trust me.',
-    '🔮 The future is automated',
-    '⚙️ 106 nodes? Easy.',
+    '🔭 Exploring the n8n galaxy',
+    '🐶 Woof. That means "hire him."',
   ];
   let bTimer;
   function showBubble(idx){
@@ -1986,88 +1937,88 @@ window.addEventListener('scroll',()=>{
     clearTimeout(bTimer);
     bTimer=setTimeout(()=>bubble.classList.remove('show'),3500);
   }
-  setTimeout(()=>showBubble(6),2800);
-  setInterval(showBubble,14000);
+  setTimeout(()=>showBubble(3),2800);
+  setInterval(showBubble,15000);
   canvas.addEventListener('click',()=>{ showBubble(); burstT=1; });
+
+  // ── EDGE-ROAMING PATROL ──
+  // Patrol point is in viewport px, walking a rounded-rect path
+  // just inside the screen edges.
+  let curX=0, curY=0, curAngle=0;
+  function getMargin(){
+    return window.innerWidth<=640 ? 44 : 96;
+  }
+  function pathPoints(){
+    const m = getMargin();
+    const w = window.innerWidth, h = window.innerHeight;
+    return [
+      {x:m,        y:h-m},      // bottom-left
+      {x:w-m,      y:h-m},      // bottom-right
+      {x:w-m,      y:m+40},     // top-right (leave room for header)
+      {x:m,        y:m+40},     // top-left
+    ];
+  }
+  let pts = pathPoints();
+  let segIdx = 0;
+  curX = pts[0].x; curY = pts[0].y;
+  window.addEventListener('resize', ()=>{ pts = pathPoints(); });
+
+  const SPEED = 70; // px/sec
+  let lastT = performance.now();
+
+  function stepPatrol(now){
+    const dt = Math.min(.05, (now-lastT)/1000);
+    lastT = now;
+    const target = pts[(segIdx+1)%pts.length];
+    const dx = target.x-curX, dy = target.y-curY;
+    const dist = Math.hypot(dx,dy);
+    if(dist < 4){
+      segIdx = (segIdx+1)%pts.length;
+    } else {
+      const step = SPEED*dt;
+      const ratio = Math.min(1, step/dist);
+      curX += dx*ratio;
+      curY += dy*ratio;
+      curAngle = lerp(curAngle, Math.atan2(dx,dy), .15);
+    }
+    const half = (window.innerWidth<=640?32:60);
+    wrap.style.transform = `translate(${curX-half}px, ${curY-half}px)`;
+  }
 
   // ── ANIMATE ──
   let t=0;
-  function animate(){
+  function animate(now){
     requestAnimationFrame(animate);
-    t+=.016; frame++;
-    const spd = isHover?2.2:1.0;
+    t+=.016;
+    stepPatrol(now||performance.now());
 
-    // bob
-    aria.position.y = Math.sin(t*1.3)*.072;
+    const spd = isHover?1.6:1.0;
 
-    // mouse tilt
-    sRotY=lerp(sRotY,mouseX*.36,.07);
-    sRotX=lerp(sRotX,mouseY*-.22,.07);
-    aria.rotation.y=sRotY;
-    aria.rotation.x=sRotX;
+    // running bob + slight body roll, facing direction of travel
+    body.position.y = .15 + Math.abs(Math.sin(t*7*spd))*.07;
+    dog.rotation.y = lerp(dog.rotation.y, curAngle, .12);
+    body.rotation.z = Math.sin(t*7*spd)*.05;
 
-    // core pulse
-    const p = 1+Math.sin(t*2.6)*.07;
-    core.scale.setScalar(p);
-    coreMat.emissiveIntensity = 1.4+Math.sin(t*2.6)*.35;
-    kernel.scale.setScalar(p*1.15);
+    // leg swing
+    legFL.rotation.x = Math.sin(t*9*spd)*.5;
+    legFR.rotation.x = -Math.sin(t*9*spd)*.5;
 
-    // eyes: mouse look + blink
-    eyeGroup.rotation.y = mouseX*.18;
-    eyeGroup.rotation.x = mouseY*-.12;
-    const blinkCycle = t%3.8;
-    const bScale = blinkCycle>3.65?Math.max(.04,1-(blinkCycle-3.65)*55):1;
-    eyeL.scale.y=bScale; eyeR.scale.y=bScale;
-    egL.scale.y=bScale;  egR.scale.y=bScale;
+    // tail wag
+    tail.rotation.y = Math.sin(t*5)*.35;
 
-    // rings
-    r1.rotation.z += .009*spd;
-    r4.rotation.z += .009*spd;
-    r2.rotation.z -= .013*spd;
-    r2.rotation.x += .004*spd;
-    r3.rotation.z += .006*spd;
-    r3.rotation.y += .005*spd;
+    // head bob + ear flap
+    headGrp.rotation.z = Math.sin(t*7*spd)*.03;
 
-    // icosahedron
-    ico.rotation.y += .005*spd;
-    ico.rotation.z += .003*spd;
+    // visor glow pulse
+    visorMat.emissiveIntensity = .55+Math.sin(t*2)*.15;
 
-    // burst
-    if(burstT>0){ burstT=Math.max(0,burstT-.025); }
-    const bScale2 = burstT>0 ? 1+Math.sin(burstT*Math.PI)*0.28 : 1;
-
-    // particles
-    const pa=pGeo.attributes.position.array;
-    for(let i=0;i<PC;i++){
-      const d=pData[i];
-      d.theta+=d.spd*.009*spd;
-      const r2=d.r*bScale2;
-      pa[i*3  ]=r2*Math.sin(d.phi)*Math.cos(d.theta);
-      pa[i*3+1]=r2*Math.cos(d.phi);
-      pa[i*3+2]=r2*Math.sin(d.phi)*Math.sin(d.theta);
+    // click burst — little hop
+    if(burstT>0){
+      dog.position.y = Math.sin(burstT*Math.PI)*.25;
+      burstT = Math.max(0, burstT-.03);
+    } else {
+      dog.position.y = 0;
     }
-    pGeo.attributes.position.needsUpdate=true;
-
-    // neural lines — update every 14 frames
-    if(frame%14===0){
-      const nl=nlGeo.attributes.position.array;
-      for(let i=0;i<NL;i++){
-        const a=Math.floor(Math.random()*PC);
-        const b=Math.floor(Math.random()*PC);
-        nl[i*6  ]=pa[a*3];  nl[i*6+1]=pa[a*3+1]; nl[i*6+2]=pa[a*3+2];
-        nl[i*6+3]=pa[b*3];  nl[i*6+4]=pa[b*3+1]; nl[i*6+5]=pa[b*3+2];
-      }
-      nlGeo.attributes.position.needsUpdate=true;
-    }
-
-    // atmosphere breathe
-    atmosMat.opacity=.055+Math.sin(t*1.1)*.02;
-
-    // ground disc pulse
-    gRefl.scale.setScalar(1+Math.sin(t*1.3)*.08);
-
-    // light dance
-    pL1.intensity=3.5+Math.sin(t*2.2)*.8;
 
     renderer.render(scene,camera);
   }
