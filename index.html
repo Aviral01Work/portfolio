@@ -605,6 +605,200 @@
     .cert-item:hover { border-color:rgba(232,170,90,0.25); color:var(--text); background:var(--bg3); }
     .cert-icon { font-size:1rem; }
 
+    /* ─── FEATURED CERT CARD ─────────────────── */
+    .cert-featured {
+      width:100%; display:flex; align-items:center; gap:20px;
+      background:linear-gradient(135deg,rgba(207,107,72,.1),rgba(232,170,90,.05));
+      border:1px solid rgba(207,107,72,.32); border-radius:16px;
+      padding:18px 24px; cursor:pointer; position:relative; overflow:hidden;
+      transition:border-color .3s,box-shadow .3s;
+    }
+    .cert-featured::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:1px;
+      background:linear-gradient(90deg,transparent,rgba(207,107,72,.65),transparent);
+    }
+    .cert-featured:hover { border-color:rgba(207,107,72,.6); box-shadow:0 8px 32px rgba(207,107,72,.14); }
+    .cert-featured-img {
+      width:72px; height:72px; object-fit:contain; flex-shrink:0;
+      filter:drop-shadow(0 4px 14px rgba(207,107,72,.38));
+    }
+    .cert-featured-body { flex:1; }
+    .cert-featured-tag {
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(207,107,72,.15); border:1px solid rgba(207,107,72,.32);
+      color:#e8935a; font-size:10px; font-weight:700;
+      letter-spacing:1.5px; text-transform:uppercase;
+      padding:3px 10px; border-radius:100px; margin-bottom:7px;
+    }
+    .cert-featured-tag span { display:inline-block; width:6px; height:6px; border-radius:50%;
+      background:#e8935a; animation:cert-blink 1.5s ease-in-out infinite; }
+    @keyframes cert-blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+    .cert-featured-title {
+      font-family:var(--font2); font-size:15px; font-weight:700;
+      color:var(--text); margin-bottom:3px;
+    }
+    .cert-featured-meta { font-size:12px; color:var(--text2); }
+    .cert-featured-arrow { font-size:18px; color:rgba(207,107,72,.45); transition:transform .2s; }
+    .cert-featured:hover .cert-featured-arrow { transform:translateX(5px); }
+
+    /* ─── ACHIEVEMENT POPUP ──────────────────── */
+    #cert-overlay {
+      position:fixed; inset:0; z-index:8900;
+      background:rgba(7,9,15,.82); backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none;
+      transition:opacity .5s ease; cursor:auto;
+    }
+    #cert-overlay.cert-open { opacity:1; pointer-events:all; }
+    #confetti-cvs {
+      position:fixed; inset:0; z-index:8901; pointer-events:none;
+    }
+    #cert-modal {
+      position:relative; z-index:8902;
+      display:flex; max-width:820px; width:92%;
+      background:linear-gradient(140deg,#0d1120,#111827);
+      border:1px solid rgba(255,255,255,.08); border-radius:26px;
+      overflow:hidden;
+      box-shadow:0 40px 120px rgba(0,0,0,.75),0 0 0 1px rgba(207,107,72,.1);
+      transform:translateY(40px) scale(.95);
+      transition:transform .55s cubic-bezier(.175,.885,.32,1.275);
+    }
+    #cert-overlay.cert-open #cert-modal { transform:translateY(0) scale(1); }
+    #cert-close {
+      position:absolute; top:16px; right:16px; z-index:10;
+      width:30px; height:30px; border-radius:50%;
+      background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
+      color:var(--text2); font-size:12px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .2s; line-height:1;
+    }
+    #cert-close:hover { background:rgba(255,255,255,.16); }
+    #cert-left {
+      width:260px; min-width:260px; flex-shrink:0;
+      background:linear-gradient(160deg,#1d0d07,#2e1508,#1a0c06);
+      display:flex; flex-direction:column; align-items:center;
+      justify-content:center; padding:44px 28px; position:relative; overflow:hidden;
+    }
+    #cert-left::after {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(circle at 50% 50%,rgba(207,107,72,.2) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    #cert-left-img {
+      width:190px; object-fit:contain; position:relative; z-index:1;
+      filter:drop-shadow(0 12px 32px rgba(207,107,72,.5));
+      animation:cert-float 3s ease-in-out infinite;
+    }
+    @keyframes cert-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    .cert-new-pill {
+      margin-top:20px; position:relative; z-index:1;
+      background:linear-gradient(90deg,rgba(207,107,72,.2),rgba(232,170,90,.15));
+      border:1px solid rgba(207,107,72,.42);
+      color:#e8aa5a; font-family:var(--font2); font-size:9px;
+      font-weight:700; letter-spacing:2.5px; text-transform:uppercase;
+      padding:5px 16px; border-radius:100px;
+      animation:cert-pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes cert-pulse {
+      0%,100%{box-shadow:0 0 0 0 rgba(207,107,72,.5)}
+      50%{box-shadow:0 0 0 8px rgba(207,107,72,0)}
+    }
+    #cert-right {
+      flex:1; padding:44px 44px;
+      display:flex; flex-direction:column; justify-content:center; gap:14px;
+    }
+    .cert-earner {
+      display:flex; align-items:center; gap:10px;
+    }
+    .cert-earner-name { font-size:13px; font-weight:600; color:var(--text); }
+    .cert-earner-label { font-size:11px; color:var(--text2); margin-top:1px; }
+    #cert-profile-sq {
+      position:absolute; top:14px; right:52px;
+      width:188px; height:188px; object-fit:cover; object-position:center top;
+      border-radius:18px;
+      border:2px solid rgba(207,107,72,.45);
+      box-shadow:0 6px 26px rgba(0,0,0,.55), 0 0 0 4px rgba(207,107,72,.1);
+    }
+    .cert-eyebrow {
+      font-family:var(--font2); font-size:11px; font-weight:700;
+      letter-spacing:2.4px; text-transform:uppercase; color:var(--amber);
+    }
+    #cert-right h2 {
+      font-family:var(--font2); font-size:26px; font-weight:800;
+      color:var(--text); line-height:1.2; margin:0;
+    }
+    .cert-sub { font-size:13px; color:var(--text2); font-weight:500; }
+    .cert-desc {
+      font-size:13px; color:var(--text2); line-height:1.75;
+      border-left:2px solid rgba(207,107,72,.38); padding-left:14px;
+      margin:2px 0;
+    }
+    .cert-validity {
+      font-size:11px; color:var(--text3);
+      font-family:var(--font2); letter-spacing:.5px;
+    }
+    .cert-btns { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+    .cert-btn-v {
+      display:inline-flex; align-items:center;
+      background:linear-gradient(135deg,#cf6b48,#e8aa5a);
+      color:#fff; font-family:var(--font2); font-size:12px; font-weight:700;
+      padding:10px 22px; border-radius:100px; text-decoration:none; border:none;
+      box-shadow:0 4px 20px rgba(207,107,72,.32); cursor:pointer;
+      transition:transform .2s,box-shadow .2s;
+    }
+    .cert-btn-v:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(207,107,72,.5); }
+    .cert-btn-c {
+      display:inline-flex; align-items:center;
+      background:transparent; border:1px solid rgba(255,255,255,.14);
+      color:var(--text); font-family:var(--font2); font-size:12px; font-weight:600;
+      padding:10px 22px; border-radius:100px; cursor:pointer;
+      transition:border-color .2s,background .2s;
+    }
+    .cert-btn-c:hover { background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.3); }
+
+    /* ─── CERT LIGHTBOX ──────────────────────── */
+    #cert-lb {
+      position:fixed; inset:0; z-index:9200;
+      background:rgba(4,6,10,.96); backdrop-filter:blur(22px);
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none; transition:opacity .3s; cursor:auto;
+    }
+    #cert-lb.lb-open { opacity:1; pointer-events:all; }
+    #cert-lb-wrap {
+      position:relative; max-width:860px; width:92%;
+      transform:scale(.88);
+      transition:transform .4s cubic-bezier(.175,.885,.32,1.275);
+    }
+    #cert-lb.lb-open #cert-lb-wrap { transform:scale(1); }
+    #cert-lb-wrap img {
+      width:100%; border-radius:20px;
+      box-shadow:0 40px 120px rgba(0,0,0,.9),0 0 0 1px rgba(207,107,72,.2);
+    }
+    #cert-lb-close {
+      position:absolute; top:-14px; right:-14px;
+      width:34px; height:34px; border-radius:50%;
+      background:#0e1221; border:1px solid rgba(255,255,255,.16);
+      color:var(--text); font-size:14px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .2s;
+    }
+    #cert-lb-close:hover { background:#1b2540; }
+    .cert-lb-caption {
+      text-align:center; margin-top:14px;
+      font-size:12px; color:var(--text3);
+    }
+    .cert-lb-caption a { color:var(--amber); text-decoration:none; }
+    .cert-lb-caption a:hover { text-decoration:underline; }
+
+    @media(max-width:640px) {
+      #cert-modal { flex-direction:column; }
+      #cert-left { width:100%; min-width:unset; padding:32px 24px 24px; }
+      #cert-left-img { width:140px; }
+      #cert-right { padding:24px 26px 36px; gap:12px; }
+      #cert-right h2 { font-size:21px; }
+    }
+
     /* ─── RESUME ─────────────────────────────── */
     .resume-box {
       background:var(--bg2); border:1px solid var(--border);
@@ -1091,7 +1285,15 @@
     <span class="s-label">Credentials</span>
     <h2 class="s-title">Certifications</h2>
     <div class="cert-grid">
-      <div class="cert-item"><span class="cert-icon">🏅</span><a href="https://verify.skilljar.com/c/p2je67inhdoj" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">Claude Certified Architect — Foundations · Anthropic — 2026 ↗</a></div>
+      <div class="cert-featured" onclick="openCertPopup()" role="button" tabindex="0" aria-label="View Claude Certified Architect achievement">
+        <img src="certificate-p2je67inhdoj-1782853373.png" alt="Claude Certified Architect badge" class="cert-featured-img">
+        <div class="cert-featured-body">
+          <div class="cert-featured-tag"><span></span>New Achievement</div>
+          <div class="cert-featured-title">Claude Certified Architect — Foundations</div>
+          <div class="cert-featured-meta">Anthropic &nbsp;·&nbsp; Jun–Dec 2026 &nbsp;·&nbsp; Cert #p2je67inhdoj</div>
+        </div>
+        <div class="cert-featured-arrow">→</div>
+      </div>
       <div class="cert-item"><span class="cert-icon">🏅</span>Make.com Certified — 2025</div>
       <div class="cert-item"><span class="cert-icon">🎓</span>Artificial Intelligence — IIT Kanpur</div>
       <div class="cert-item"><span class="cert-icon">🎓</span>Artificial Intelligence — GUVI (IITM Research Park)</div>
@@ -1711,6 +1913,155 @@ window.addEventListener('scroll',()=>{
     el.addEventListener('mouseleave',()=>document.body.classList.remove('hovered'));
   });
 })();
+</script>
+
+<!-- ══ ACHIEVEMENT POPUP ══════════════════════════════════════════════ -->
+<canvas id="confetti-cvs"></canvas>
+
+<div id="cert-overlay" role="dialog" aria-modal="true" aria-label="Achievement unlocked">
+  <div id="cert-modal">
+    <button id="cert-close" aria-label="Close" onclick="closeCertPopup()">✕</button>
+    <img id="cert-profile-sq" src="Gemini_Generated_Image_ui37wiui37wiui37.png" alt="Aviral Dubey">
+
+    <!-- Left: badge -->
+    <div id="cert-left">
+      <img id="cert-left-img"
+        src="certificate-p2je67inhdoj-1782853373.png"
+        alt="Claude Certified Architect – Foundations badge">
+      <div class="cert-new-pill">🏅 New Achievement</div>
+    </div>
+
+    <!-- Right: details -->
+    <div id="cert-right">
+      <div class="cert-earner">
+        <div>
+          <div class="cert-earner-name">Aviral Dubey</div>
+          <div class="cert-earner-label">AI Automation Engineer</div>
+        </div>
+      </div>
+      <div class="cert-eyebrow">🎉 Achievement Unlocked</div>
+      <h2>Claude Certified<br>Architect</h2>
+      <div class="cert-sub">Foundations &nbsp;·&nbsp; Anthropic</div>
+      <p class="cert-desc">
+        Certified in advanced Claude API usage, agentic workflows,
+        and enterprise AI integration — completing Anthropic's
+        official Architect-level assessment.
+      </p>
+      <div class="cert-validity">📅 Valid Jun 19 – Dec 19, 2026 &nbsp;·&nbsp; #p2je67inhdoj</div>
+      <div class="cert-btns">
+        <a class="cert-btn-v" href="https://verify.skilljar.com/c/p2je67inhdoj"
+           target="_blank" rel="noopener">Verify ↗</a>
+        <button class="cert-btn-c" onclick="openCertLightbox()">View Certificate</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CERTIFICATE LIGHTBOX ══════════════════════════════════════════ -->
+<div id="cert-lb" role="dialog" aria-modal="true" aria-label="Certificate">
+  <div id="cert-lb-wrap">
+    <button id="cert-lb-close" onclick="closeCertLightbox()" aria-label="Close">✕</button>
+    <img src="certificate-p2je67inhdoj-1782853373.png" alt="Claude Certified Architect — Foundations certificate">
+    <div class="cert-lb-caption">
+      Claude Certified Architect — Foundations &nbsp;·&nbsp;
+      <a href="https://verify.skilljar.com/c/p2je67inhdoj" target="_blank" rel="noopener">Verify at skilljar.com ↗</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Popup open/close ── */
+function openCertPopup() {
+  document.getElementById('cert-overlay').classList.add('cert-open');
+  document.body.style.overflow = 'hidden';
+  launchConfetti();
+}
+function closeCertPopup() {
+  document.getElementById('cert-overlay').classList.remove('cert-open');
+  document.body.style.overflow = '';
+  stopConfetti();
+}
+
+/* ── Lightbox ── */
+function openCertLightbox() {
+  document.getElementById('cert-lb').classList.add('lb-open');
+}
+function closeCertLightbox() {
+  document.getElementById('cert-lb').classList.remove('lb-open');
+}
+
+/* Close popup on overlay click, Esc key */
+document.getElementById('cert-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeCertPopup();
+});
+document.getElementById('cert-lb').addEventListener('click', function(e) {
+  if (e.target === this) closeCertLightbox();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { closeCertLightbox(); closeCertPopup(); }
+});
+
+/* Featured card keyboard access */
+document.querySelector('.cert-featured').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCertPopup(); }
+});
+
+/* ── Auto-show once per session ── */
+if (!sessionStorage.getItem('cert_popup_shown')) {
+  setTimeout(function() {
+    openCertPopup();
+    sessionStorage.setItem('cert_popup_shown', '1');
+  }, 1600);
+}
+
+/* ── Confetti ── */
+var _confettiAF, _confettiParts = [];
+var CONF_COLS = ['#cf6b48','#e8aa5a','#4a8cf7','#ffffff','#e8935a','#7ec8e3','#f7c948'];
+
+function launchConfetti() {
+  var cvs = document.getElementById('confetti-cvs');
+  cvs.width = window.innerWidth;
+  cvs.height = window.innerHeight;
+  _confettiParts = [];
+  for (var i = 0; i < 130; i++) {
+    _confettiParts.push({
+      x: Math.random() * cvs.width,
+      y: Math.random() * -cvs.height,
+      w: 6 + Math.random() * 8,
+      h: 10 + Math.random() * 12,
+      r: Math.random() * 360,
+      dr: (Math.random() - .5) * 6,
+      dy: 2.5 + Math.random() * 4,
+      dx: (Math.random() - .5) * 2,
+      col: CONF_COLS[Math.floor(Math.random() * CONF_COLS.length)],
+      opacity: .85 + Math.random() * .15
+    });
+  }
+  cancelAnimationFrame(_confettiAF);
+  (function tick() {
+    var ctx = cvs.getContext('2d');
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    var alive = false;
+    _confettiParts.forEach(function(p) {
+      if (p.y < cvs.height + 20) alive = true;
+      p.x += p.dx; p.y += p.dy; p.r += p.dr;
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = p.col;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.r * Math.PI / 180);
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    if (alive) _confettiAF = requestAnimationFrame(tick);
+    else ctx.clearRect(0, 0, cvs.width, cvs.height);
+  })();
+}
+function stopConfetti() {
+  cancelAnimationFrame(_confettiAF);
+  var cvs = document.getElementById('confetti-cvs');
+  cvs.getContext('2d').clearRect(0, 0, cvs.width, cvs.height);
+}
 </script>
 </body>
 </html>
